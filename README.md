@@ -1,6 +1,6 @@
 # gcstr
 
-Garbage collected strings for C, inspired by Go.
+Safe garbage collected strings for C, inspired by Go.
 
 ## Requirements
 
@@ -21,7 +21,11 @@ Garbage collected strings for C, inspired by Go.
     make
     ./main
 
-Alternatively, use [cxx](https://github.com/xyproto/cxx) and just type `cxx run`.
+Alternatively, install [cxx](https://github.com/xyproto/cxx) and use `cxx run`.
+
+## Installation
+
+    make install
 
 ## General info
 
