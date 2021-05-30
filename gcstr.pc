@@ -1,0 +1,9 @@
+prefix=/usr
+libdir=${prefix}/lib
+includedir=${prefix}/include/gcstr
+
+Name: GCSTR
+Description: Garbage collected strings, inspired by Go
+Version: 0.0.1
+Cflags: -I${includedir}
+Libs: -L${libdir} -lgcstr -lgc

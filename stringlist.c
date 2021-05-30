@@ -1,0 +1,266 @@
+#include <stdio.h>
+
+#include "error.h"
+#include "gotypes.h"
+#include "panic.h"
+#include "str.h"
+#include "structs.h"
+
+#include "stringlist.h"
+
+// NewStringList creates a new 1 element string list
+StringList* NewStringList()
+{
+    StringList* sl = (StringList*)GC_MALLOC(sizeof(StringList));
+    if (sl == nil) {
+        panicConstChar("Could not allocate memory in NewStringList");
+    }
+    // Set an empty string value
+    sl->value = NewString("");
+    // Set the pointer to the next element to nil, just to be explicit about it
+    sl->next = nil;
+    return sl;
+}
+
+void StringListPush(StringList* sl, String* s)
+{
+    if (sl == nil) {
+        panicConstChar("The given StringList* to StringListPush must be initialized");
+    }
+    StringList* current = LastStringListNode(sl);
+    StringList* next = (StringList*)GC_MALLOC(sizeof(StringList));
+    if (next == nil) {
+        panicConstChar("Could not allocate memory in StringListPush");
+    }
+    next->value = s;
+    next->next = nil;
+    current->next = next;
+}
+
+String* StringListPop(StringList* sl)
+{
+    if (sl->next == nil) {
+        // We are at the only node, return this string and set self to nil
+        String* retval = sl->value;
+        sl = nil;
+        return retval;
+    }
+    StringList* almostLast = BeforeLastStringListNode(sl);
+    // Get the value of the last node
+    String* retval = almostLast->next->value;
+    // Disconnect the last node
+    almostLast->next = nil;
+    // Return the string
+    return retval;
+}
+
+uint StringListLen(StringList* sl)
+{
+    uint counter = 1;
+    StringNode* current = sl;
+    while (current->next != nil) {
+        current = current->next;
+        counter++;
+    }
+    return counter;
+}
+
+StringList* LastStringListNode(StringList* sl)
+{
+    StringNode* current = sl;
+    while (current->next != nil) {
+        current = current->next;
+    }
+    return current;
+}
+
+StringList* BeforeLastStringListNode(StringList* sl)
+{
+    StringNode* prev = nil;
+    StringNode* current = sl;
+    while (current->next != nil) {
+        prev = current;
+        current = current->next;
+    }
+    return prev;
+}
+
+// Lines splits a string on the newline character. No trimming.
+StringList* Lines(String* s)
+{
+    StringList* sl = NewStringList();
+    StringList* current = sl;
+    for (uint i = 0; i < Len(s); i++) {
+        if (s->contents[i] == '\n') {
+            // Add a new empty string to the string list, if the current string contains something
+            StringListPush(sl, NewString(""));
+            current = LastStringListNode(sl);
+        } else {
+            // Push a character to the current StringList node
+            PushChar(current->value, s->contents[i]);
+        }
+    }
+    // If the last added string is empty, remove it
+    if (Len(LastString(sl)) == 0) {
+        StringListPop(sl);
+    }
+    return sl;
+}
+
+// Split splits a string on the given separator. No trimming.
+StringList* Split(String* s, String* sep)
+{
+    StringList* sl = NewStringList();
+    uint next_pos = 0;
+    FindResult* fr = FindFrom(next_pos, s, sep);
+    Error* err = FindResultToError(fr);
+    bool first = true; // Not very elegant, but it works
+    while (err == nil) {
+        // Add strings from searches that did not return an error
+        if (first) {
+            sl->value = Slice(s, next_pos, FindResultToPos(fr));
+            first = false;
+        } else {
+            StringListPush(sl, Slice(s, next_pos, FindResultToPos(fr)));
+        }
+        // Update the next position to search from
+        next_pos = FindResultToPos(fr) + Len(sep);
+        // Exit if the end is reached
+        if (next_pos >= s->len) {
+            return sl;
+        }
+        // Search again
+        fr = FindFrom(next_pos, s, sep);
+        err = FindResultToError(fr);
+    }
+    StringListPush(sl, Slice(s, next_pos, Len(s)));
+    return sl;
+}
+
+// Join the given StringList* to a single String*, given a separator.
+String* Join(StringList* sl, String* sep)
+{
+    String* sb = NewString("");
+    StringNode* current = sl;
+    while (current->next != nil) {
+        Append(sb, current->value);
+        Append(sb, sep);
+        current = current->next;
+    }
+    Append(sb, current->value);
+    return sb;
+}
+
+// Join the given StringList* to a single String*, given a separator.
+String* JoinConstChar(StringList* sl, const char* sep)
+{
+    String* sb = NewString("");
+    StringNode* current = sl;
+    while (current->next != nil) {
+        Append(sb, current->value);
+        Append(sb, NewStringNoCopy(sep));
+        current = current->next;
+    }
+    Append(sb, current->value);
+    return sb;
+}
+
+// SplitChar will split a string on a single character. No trimming.
+StringList* SplitChar(String* s, char c)
+{
+    StringList* sl = NewStringList();
+    StringList* current = sl;
+    for (uint i = 0; i < Len(s); i++) {
+        if (s->contents[i] == c) {
+            // Add a new empty string to the string list, if the current string contains something
+            if (Len(current->value) > 0) {
+                StringListPush(sl, NewString(""));
+                current = LastStringListNode(sl);
+            }
+        } else {
+            // Push a character to the current StringList node
+            PushChar(current->value, s->contents[i]);
+        }
+    }
+    // If the last added string is empty, remove it
+    if (Len(LastString(sl)) == 0) {
+        StringListPop(sl);
+    }
+    return sl;
+}
+
+// Fields will split a string on any whitespace and trim the values.
+StringList* Fields(String* s)
+{
+    StringList* sl = NewStringList();
+    StringList* current = sl;
+    for (uint i = 0; i < Len(s); i++) {
+        if (s->contents[i] == ' ' || s->contents[i] == '\n' || s->contents[i] == '\t'
+            || s->contents[i] == '\r' || s->contents[i] == '\v' || s->contents[i] == '\f'
+            || s->contents[i] == '\0') {
+            // Add a new empty string to the string list, if the current string contains something
+            if (Len(current->value) > 0) {
+                StringListPush(sl, NewString(""));
+                current = LastStringListNode(sl);
+            }
+        } else {
+            // Push a character to the current StringList node, so the string will stay trimmed.
+            PushChar(current->value, s->contents[i]);
+        }
+    }
+    // If the last added string is empty, remove it
+    if (Len(LastString(sl)) == 0) {
+        StringListPop(sl);
+    }
+    return sl;
+}
+
+// FirstString returns the first string in the given StringList*
+String* FirstString(StringList* sl) { return sl->value; }
+
+// LastString returns the last string in the given StringList*
+String* LastString(StringList* sl) { return LastStringListNode(sl)->value; }
+
+// StringListForEach will apply the given function to each index and element in
+// the given StringList*.
+void StringListForEach(StringList* sl, void (*f)(uint i, String* s))
+{
+    StringNode* current = sl;
+    uint i = 0;
+    while (current->next != nil) {
+        f(i++, current->value);
+        current = current->next;
+    }
+    f(i, current->value);
+}
+
+// StringListMap will apply the given function to each element in
+// the given StringList*. Unlike StringListForEarch, no index is passed to the
+// function.
+void StringListMap(StringList* sl, void (*f)(String* s))
+{
+    StringNode* current = sl;
+    while (current->next != nil) {
+        f(current->value);
+        current = current->next;
+    }
+    f(current->value);
+}
+
+// TrimAll will trim whitespace from all strings in the given StringList*
+void TrimAll(StringList* sl) { StringListMap(sl, Trim); }
+
+// StringListFromArgs will create a new StringList* from the given count and
+// char* array.
+StringList* StringListFromArgs(int argc, char* argv[])
+{
+    StringList* sl = NewStringList();
+    if (argc == 0) {
+        return sl;
+    }
+    sl->value = NewString(argv[0]);
+    for (uint i = 1; i < argc; i++) {
+        StringListPush(sl, NewString(argv[i]));
+    }
+    return sl;
+}
