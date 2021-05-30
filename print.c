@@ -9,11 +9,11 @@ void Print(String* s) { fputs(s->contents, stdout); }
 
 void Println(String* s) { puts(s->contents); }
 
-void Printf1(String* fmt, String* a) { Print(Sprintf1(fmt, a)); }
+void Printf1(String* fmt, String* a) { Print(Sprintf(fmt, a)); }
 
 void Printf2(String* fmt, String* a, String* b) { Print(Sprintf2(fmt, a, b)); }
 
-void Printfu(String* fmt, uint u) { Print(Sprintfu(fmt, u)); }
+void Printfu(String* fmt, uint u) { Print(SprintfUint(fmt, u)); }
 
 void Flush() { fflush(stdout); }
 

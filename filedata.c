@@ -54,7 +54,7 @@ FileData* NewFileData(String* filename)
         return fd;
     }
     if (fclose(f) == EOF) {
-        panic(Sprintf1(NewString("Could not close file: %s"), filename));
+        panic(Sprintf(NewString("Could not close file: %s"), filename));
     }
     // Conclude the successful read
     fd->data[fd->len] = 0; // zero terminate the string after the contents

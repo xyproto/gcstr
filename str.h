@@ -34,18 +34,18 @@ uint FindResultToPos(FindResult* fr);
 String* FindResultToString(FindResult* fr);
 Error* FindResultToError(FindResult* fr);
 
-String* Sprintf1(String* fmt, String* a);
+String* Sprintf(String* fmt, String* a);
 String* Sprintf2(String* fmt, String* a, String* b);
-String* Sprintfu(String* fmt, uint u);
-String* Sprintfc(String* fmt, char c);
+String* SprintfUint(String* fmt, uint u);
+String* SprintfChar(String* fmt, char c);
 
 String* Combine(String* a, String* b);
 
 void Append(String* a, String* b);
 void AppendConstChar(String* a, const char* b);
-void Appendf1(String* a, String* fmt, String* b);
-void Appendfu(String* a, String* fmt, uint u);
-void Appendfc(String* a, String* fmt, char c);
+void Appendf(String* a, String* fmt, String* b);
+void AppendfUint(String* a, String* fmt, uint u);
+void AppendfChar(String* a, String* fmt, char c);
 
 String* Slice(String* s, uint from, uint upto);
 

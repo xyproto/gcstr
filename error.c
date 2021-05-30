@@ -37,7 +37,7 @@ Error* Errorf1ConstChar(const char* fmt, const char* s)
     if (err == nil) { // check if not allocated
         panicConstChar("could not allocate memory in Errorf1ConstChar");
     }
-    err->message = Sprintf1(NewStringNoCopy(fmt), NewStringNoCopy(s));
+    err->message = Sprintf(NewStringNoCopy(fmt), NewStringNoCopy(s));
     return err;
 }
 
@@ -57,7 +57,7 @@ Error* ErrorfuConstChar(const char* fmt, uint u)
     if (err == nil) { // check if not allocated
         panicConstChar("could not allocate memory in ErrorfuConstChar");
     }
-    err->message = Sprintfu(NewStringNoCopy(fmt), u);
+    err->message = SprintfUint(NewStringNoCopy(fmt), u);
     return err;
 }
 
@@ -67,7 +67,7 @@ Error* Errorf1(String* fmt, String* s)
     if (err == nil) { // check if not allocated
         panic(NewString("could not allocate memory in Errorf1"));
     }
-    err->message = Sprintf1(fmt, s);
+    err->message = Sprintf(fmt, s);
     return err;
 }
 
@@ -87,6 +87,6 @@ Error* Errorfu(String* fmt, uint u)
     if (err == nil) { // check if not allocated
         panic(NewString("could not allocate memory in Errorfu"));
     }
-    err->message = Sprintfu(fmt, u);
+    err->message = SprintfUint(fmt, u);
     return err;
 }

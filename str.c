@@ -279,17 +279,17 @@ String* FindResultToString(FindResult* fr)
     if (err != nil) {
         return Combine(NewString("Could not find string: "), ErrorToString(err));
     }
-    return Sprintfu(NewString("Found the string at position %u."), FindResultToPos(fr));
+    return SprintfUint(NewString("Found the string at position %u."), FindResultToPos(fr));
 }
 
-String* Sprintf1(String* fmt, String* a)
+String* Sprintf(String* fmt, String* a)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, a->contents) + 1;
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in Sprintf1");
+        panicConstChar("could not allocate memory in Sprintf");
     }
     snprintf(msg, buf_size, fmt->contents, a->contents);
     msg[buf_size - 1] = 0;
@@ -310,28 +310,28 @@ String* Sprintf2(String* fmt, String* a, String* b)
     return NewString(msg);
 }
 
-String* Sprintfu(String* fmt, uint u)
+String* SprintfUint(String* fmt, uint u)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, u) + 1;
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in Sprintfu");
+        panicConstChar("could not allocate memory in SprintfUint");
     }
     snprintf(msg, buf_size, fmt->contents, u);
     msg[buf_size - 1] = 0;
     return NewString(msg);
 }
 
-String* Sprintfc(String* fmt, char c)
+String* SprintfChar(String* fmt, char c)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, c) + 1;
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in Sprintfc");
+        panicConstChar("could not allocate memory in SprintfChar");
     }
     snprintf(msg, buf_size, fmt->contents, c);
     msg[buf_size - 1] = 0;
@@ -356,13 +356,13 @@ void Append(String* a, String* b)
 void AppendConstChar(String* a, const char* b) { Append(a, NewString(b)); }
 
 // Append the result of a sprintf-like format string and a string
-void Appendf1(String* a, String* fmt, String* b) { Append(a, Sprintf1(fmt, b)); }
+void Appendf(String* a, String* fmt, String* b) { Append(a, Sprintf(fmt, b)); }
 
 // Append the result of a sprintf-like format string and uint
-void Appendfu(String* a, String* fmt, uint u) { Append(a, Sprintfu(fmt, u)); }
+void AppendfUint(String* a, String* fmt, uint u) { Append(a, SprintfUint(fmt, u)); }
 
 // Append the result of a sprintf-like format string and a char
-void Appendfc(String* a, String* fmt, char c) { Append(a, Sprintfc(fmt, c)); }
+void AppendfChar(String* a, String* fmt, char c) { Append(a, SprintfChar(fmt, c)); }
 
 String* Slice(String* s, uint from, uint upto)
 {
@@ -412,29 +412,29 @@ String* ListString(String* s)
         const char c = s->contents[i];
         switch (c) {
         case ' ':
-            Appendfu(sb, NewString("\t[%04u] <space>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <space>\n"), i);
             continue;
         case '\n':
-            Appendfu(sb, NewString("\t[%04u] <nl>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <nl>\n"), i);
             continue;
         case '\t':
-            Appendfu(sb, NewString("\t[%04u] <tab>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <tab>\n"), i);
             continue;
         case '\r':
-            Appendfu(sb, NewString("\t[%04u] <cr>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <cr>\n"), i);
             continue;
         case '\v':
-            Appendfu(sb, NewString("\t[%04u] <vt>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <vt>\n"), i);
             continue;
         case '\f':
-            Appendfu(sb, NewString("\t[%04u] <ff>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <ff>\n"), i);
             continue;
         case '\0':
-            Appendfu(sb, NewString("\t[%04u] <nul>\n"), i);
+            AppendfUint(sb, NewString("\t[%04u] <nul>\n"), i);
             continue;
         }
-        Appendfu(sb, NewString("\t[%04u] "), i);
-        Appendfc(sb, NewString("%c\n"), c);
+        AppendfUint(sb, NewString("\t[%04u] "), i);
+        AppendfChar(sb, NewString("%c\n"), c);
     }
     return sb;
 }
