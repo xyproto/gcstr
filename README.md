@@ -1,12 +1,12 @@
-# GCSTR [![Build Status](https://travis-ci.org/xyproto/gcstr.svg?branch=main)](https://travis-ci.org/xyproto/gcstr)
+# gcstr
 
 Garbage collected strings for C, inspired by Go.
 
 ## Requirements
 
-* A C11 compiler (or later).
-* [gc](http://www.hboehm.info/gc/) (the `gc` package in Arch Linux)
-* `gcc`, `make` and `pkg-config` (included in the `base-devel` group in Arch Linux)
+* A C compiler that supports C11, ie. `gcc` or `clang`.
+* The garbage collection library [gc](http://www.hboehm.info/gc/) (available as the `gc` package in many Linux distros).
+* `make` and `pkg-config`.
 
 ## Guidelines/limitations/ideas
 
@@ -18,17 +18,13 @@ Garbage collected strings for C, inspired by Go.
 
 ## Building and running tests
 
-### With [cxx](https://github.com/xyproto/cxx)
-
-    cxx run
-
-### With make
-
     make
     ./main
 
+Alternatively, use [cxx](https://github.com/xyproto/cxx) and just type `cxx run`.
+
 ## General info
 
-* Version: 0.0.1
+* Version: 1.0.0
 * License: BSD
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
