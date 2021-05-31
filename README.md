@@ -20,19 +20,37 @@ Safe garbage collected strings for C, inspired by Go.
 * Error messages should start with a lowercase letter and not end with punctuation.
 * The API is stable for each major version number.
 
-## Building and running tests
+## Make
+
+### Build
 
     make
-    ./main
 
-Alternatively, install [cxx](https://github.com/xyproto/cxx) and use `cxx run`.
+### Install
 
-## Installation
+    sudo make install
 
-    make install
+## [`CXX`](https://github.com/xyproto/cxx)
+
+### Build and run tests
+
+    cxx run
+
+## CMake and Ninja
+
+### Build
+
+    mkdir -p build
+    cd build
+    cmake 3.0.0 -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
+    ninja
+
+### Install
+
+    sudo ninja install
 
 ## General info
 
-* Version: 2.0.0
+* Version: 3.0.0
 * License: BSD
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
