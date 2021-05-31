@@ -18,7 +18,7 @@ String* NewString(const char* contents)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("Could not allocate memory in NewString\n");
+        panicConstChar("could not allocate memory in NewString\n");
     }
     s->len = strlen(contents);
     if (s->len == 0) {
@@ -28,7 +28,7 @@ String* NewString(const char* contents)
     }
     s->contents = (char*)GC_MALLOC(s->cap);
     if (s->contents == nil) {
-        panicConstChar("Could not allocate memory in NewString (s->contents)\n");
+        panicConstChar("could not allocate memory in NewString (s->contents)\n");
     }
     strcpy(s->contents, contents);
     return s;
@@ -38,7 +38,7 @@ String* NewStringNoCopy(const char* contents)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("Could not allocate memory in NewStringNoCopy\n");
+        panicConstChar("could not allocate memory in NewStringNoCopy\n");
     }
     s->len = strlen(contents);
     s->cap = s->len;
@@ -50,13 +50,13 @@ String* NewStringFromChar(char c)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("Could not allocate memory in NewStringFromChar\n");
+        panicConstChar("could not allocate memory in NewStringFromChar\n");
     }
     s->len = 1;
     s->cap = 1;
     s->contents = (char*)GC_MALLOC(s->cap);
     if (s->contents == nil) {
-        panicConstChar("Could not allocate memory in NewString (s->contents)\n");
+        panicConstChar("could not allocate memory in NewStringFromChar (s->contents)\n");
     }
     s->contents[0] = c;
     return s;
@@ -79,7 +79,7 @@ void PushChar(String* s, char c)
         }
         s->contents = (char*)GC_REALLOC(s->contents, s->cap);
         if (s->contents == nil) {
-            panicConstChar("Could not reallocate memory in PushChar");
+            panicConstChar("could not reallocate memory in PushChar");
         }
     }
     s->contents[s->len++] = c;
@@ -102,7 +102,7 @@ void Shift(String* s, int offset)
         }
         s->contents = (char*)GC_REALLOC(s->contents, s->cap);
         if (s->contents == nil) {
-            panicConstChar("Could not reallocate memory in Shift");
+            panicConstChar("could not reallocate memory in Shift");
         }
     }
     // Nothing left, return an empty string
@@ -277,9 +277,9 @@ const String* FindResultToString(FindResult* fr)
 {
     const Error* err = FindResultToError(fr);
     if (err != nil) {
-        return Combine(NewString("Could not find string: "), ErrorToString(err));
+        return Combine(NewString("could not find string: "), ErrorToString(err));
     }
-    return SprintfUint(NewString("Found the string at position %u."), FindResultToPos(fr));
+    return SprintfUint(NewString("found the string at position %u."), FindResultToPos(fr));
 }
 
 const String* Sprintf(const String* fmt, const String* a)
