@@ -58,3 +58,5 @@ cmd/sleepycat/sleepycat
 # Tests
 gcstr
 main
+
+build/
