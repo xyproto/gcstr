@@ -10,46 +10,45 @@ String* NewString(const char* contents);
 String* NewStringNoCopy(const char* contents);
 String* NewStringFromChar(char c);
 
-const char* StringToConstChar(String* s);
-
-uint Len(String* s);
-uint Count(String* s, String* e);
-
 char PopChar(String* s);
 void PushChar(String* s, char c);
 char LeftPopChar(String* s);
 void LeftPushChar(String* s, char c);
-bool HasChar(String* s, char c);
-char LastChar(String* s);
-char FirstChar(String* s);
-void RightTrim(String* s, String* sep);
-void LeftTrim(String* s, String* sep);
-void TrimSep(String* s, String* sep);
+bool HasChar(const String* s, char c);
+char LastChar(const String* s);
+char FirstChar(const String* s);
+void RightTrim(String* s, const String* sep);
+void LeftTrim(String* s, const String* sep);
+void TrimSep(String* s, const String* sep);
 void Trim(String* s);
 void Shift(String* s, int offset);
 
-FindResult* Find(String* s, String* a);
-FindResult* FindFrom(uint pos, String* s, String* a);
+const char* StringToConstChar(const String* s);
+uint Len(const String* s);
+uint Count(const String* s, const String* e);
+
+FindResult* Find(const String* s, const String* a);
+FindResult* FindFrom(uint pos, const String* s, const String* a);
 uint FindResultToPos(FindResult* fr);
-String* FindResultToString(FindResult* fr);
-Error* FindResultToError(FindResult* fr);
+const String* FindResultToString(FindResult* fr);
+const Error* FindResultToError(FindResult* fr);
 
-String* Sprintf(String* fmt, String* a);
-String* Sprintf2(String* fmt, String* a, String* b);
-String* SprintfUint(String* fmt, uint u);
-String* SprintfChar(String* fmt, char c);
+const String* Sprintf(const String* fmt, const String* a);
+const String* Sprintf2(const String* fmt, const String* a, const String* b);
+const String* SprintfUint(const String* fmt, uint u);
+const String* SprintfChar(const String* fmt, char c);
 
-String* Combine(String* a, String* b);
+const String* Combine(const String* a, const String* b);
 
-void Append(String* a, String* b);
+void Append(String* a, const String* b);
 void AppendConstChar(String* a, const char* b);
-void Appendf(String* a, String* fmt, String* b);
-void AppendfUint(String* a, String* fmt, uint u);
-void AppendfChar(String* a, String* fmt, char c);
+void Appendf(String* a, const String* fmt, const String* b);
+void AppendfUint(String* a, const String* fmt, uint u);
+void AppendfChar(String* a, const String* fmt, char c);
 
-String* Slice(String* s, uint from, uint upto);
+const String* Slice(const String* s, uint from, uint upto);
 
-bool Equal(String* a, String* b);
-bool EqualConstChar(String* a, const char* b);
+bool Equal(const String* a, const String* b);
+bool EqualConstChar(const String* a, const char* b);
 
-String* ListString(String* s);
+const String* ListString(const String* s);

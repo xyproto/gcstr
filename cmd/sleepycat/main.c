@@ -7,6 +7,6 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
     String* filename = NewString(argv[1]);
-    Print(MustRead(filename));
+    Print(MustReadFile(filename));
     return EXIT_SUCCESS;
 }

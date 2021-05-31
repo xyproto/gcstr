@@ -2,10 +2,10 @@
 
 #include "structs.h"
 
-FileData* NewFileData(String* filename);
+FileData* NewFileData(const String* filename);
 FileData* NewFileDataConstChar(const char* filename);
 const char* FileDataToConstChar(FileData* fd);
-String* FileDataToString(FileData* fd);
-Error* FileDataToError(FileData* fd);
+const String* FileDataToString(FileData* fd);
+const Error* FileDataToError(FileData* fd);
 uint FileDataLen(FileData* fd);
 StringList* FileDataLines(FileData* fd);

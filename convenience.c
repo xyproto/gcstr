@@ -6,12 +6,41 @@
 #include "str.h"
 #include "stringlist.h"
 
-// MustRead will try read a file and either panic or return the contents as a
-// String*.
-String* MustRead(String* filename)
+// ReadFile reads the given file into the given contents *String.
+// An Error* is returned if there are issues.
+const Error* ReadFile(const String* filename, String* contents)
 {
     FileData* fd = NewFileData(filename);
-    Error* err = FileDataToError(fd);
+    if (fd == nil) {
+        return NewErrorConstChar("could not allocate memory for a new FileData struct");
+    }
+    if (fd->err != nil) {
+        return fd->err;
+    }
+    contents = (String*)FileDataToString(fd);
+    return nil;
+}
+
+// ReadFileConstChar reads the given file into the given contents *String.
+// An Error* is returned if there are issues.
+const Error* ReadFileConstChar(const char* filename, char* contents)
+{
+    FileData* fd = NewFileDataConstChar(filename);
+    if (fd == nil) {
+        return NewErrorConstChar("could not allocate memory for a new FileData struct");
+    }
+    if (fd->err != nil) {
+        return fd->err;
+    }
+    contents = (char*)FileDataToConstChar(fd);
+    return nil;
+}
+
+// MustReadFile will try read a file and either panic or return the contents as a String*.
+const String* MustReadFile(const String* filename)
+{
+    FileData* fd = NewFileData(filename);
+    const Error* err = FileDataToError(fd);
     if (err != nil) {
         String* situation = NewString("reading file");
         panicWhen(situation, err);
@@ -19,12 +48,12 @@ String* MustRead(String* filename)
     return FileDataToString(fd);
 }
 
-// MustReadConstChar will read a file and either panic or return the contents
+// MustReadFileConstChar will read a file and either panic or return the contents
 // as a const char*.
-const char* MustReadConstChar(const char* filename)
+const char* MustReadFileConstChar(const char* filename)
 {
     FileData* fd = NewFileDataConstChar(filename);
-    Error* err = FileDataToError(fd);
+    const Error* err = FileDataToError(fd);
     if (err != nil) {
         String* situation = NewString("reading file");
         panicWhen(situation, err);

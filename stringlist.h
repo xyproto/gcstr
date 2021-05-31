@@ -6,22 +6,22 @@
 // NewStringList creates a new 1 element string list
 StringList* NewStringList();
 
-void StringListPush(StringList* sl, String* s);
-String* StringListPop(StringList* sl);
+void StringListPush(StringList* sl, const String* s);
+const String* StringListPop(StringList* sl);
 uint StringListLen(StringList* sl);
 StringList* LastStringListNode(StringList* sl);
 StringList* BeforeLastStringListNode(StringList* sl);
-StringList* Lines(String* s);
-StringList* Split(String* s, String* sep);
-String* Join(StringList* sl, String* sep);
-String* JoinConstChar(StringList* sl, const char* sep);
-StringList* SplitChar(String* s, char c);
-StringList* Fields(String* s);
-String* FirstString(StringList* sl);
-String* LastString(StringList* sl);
-void StringListForEach(StringList* sl, void (*f)(uint i, String* s));
-void PrintStringElement(uint i, String* s);
+StringList* Lines(const String* s);
+StringList* Split(const String* s, const String* sep);
+const String* Join(StringList* sl, const String* sep);
+const String* JoinConstChar(StringList* sl, const char* sep);
+StringList* SplitChar(const String* s, char c);
+StringList* Fields(const String* s);
+const String* FirstString(StringList* sl);
+const String* LastString(StringList* sl);
+void StringListForEach(StringList* sl, void (*f)(uint i, const String* s));
+void PrintStringElement(uint i, const String* s);
 void PrintStringList(StringList* sl);
-void TrimStringElement(uint i, String* s);
+void TrimStringElement(uint i, const String* s);
 void TrimAll(StringList* sl);
 StringList* StringListFromArgs(int argc, char* argv[]);

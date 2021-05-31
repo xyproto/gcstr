@@ -145,9 +145,9 @@ void LeftPushChar(String* s, char c)
     s->contents[0] = c;
 }
 
-const char* StringToConstChar(String* s) { return s->contents; }
+const char* StringToConstChar(const String* s) { return s->contents; }
 
-bool HasChar(String* s, char c)
+bool HasChar(const String* s, char c)
 {
     // The for loop also handles empty strings
     for (int i = 0; i < s->len; i++) {
@@ -158,27 +158,27 @@ bool HasChar(String* s, char c)
     return false;
 }
 
-bool HasString(String* s, String* a) { return nil != strstr(s->contents, a->contents); }
+bool HasString(const String* s, const String* a) { return nil != strstr(s->contents, a->contents); }
 
-char LastChar(String* s) { return s->contents[s->len - 1]; }
+char LastChar(const String* s) { return s->contents[s->len - 1]; }
 
-char FirstChar(String* s) { return s->contents[0]; }
+char FirstChar(const String* s) { return s->contents[0]; }
 
-void RightTrim(String* s, String* sep)
+void RightTrim(String* s, const String* sep)
 {
     while (HasChar(sep, LastChar(s))) {
         PopChar(s);
     }
 }
 
-void LeftTrim(String* s, String* sep)
+void LeftTrim(String* s, const String* sep)
 {
     while (HasChar(sep, FirstChar(s))) {
         LeftPopChar(s);
     }
 }
 
-void TrimSep(String* s, String* sep)
+void TrimSep(String* s, const String* sep)
 {
     RightTrim(s, sep);
     LeftTrim(s, sep);
@@ -187,9 +187,9 @@ void TrimSep(String* s, String* sep)
 // Trim whitespace from the start and end of the string
 void Trim(String* s) { TrimSep(s, NewString(" \n\t\r\v\f")); }
 
-uint Len(String* s) { return s->len; }
+uint Len(const String* s) { return s->len; }
 
-FindResult* Find(String* s, String* a)
+FindResult* Find(const String* s, const String* a)
 {
     FindResult* fr = (FindResult*)GC_MALLOC(sizeof(FindResult));
     if (fr == nil) {
@@ -206,7 +206,7 @@ FindResult* Find(String* s, String* a)
     }
     char* p = strstr(s->contents, a->contents);
     if (p == nil) {
-        fr->err = Errorf1(NewString("could not find %s in string"), a);
+        fr->err = Errorf(NewString("could not find %s in string"), a);
         return fr;
     }
     // Subtract two char pointers to get the char position
@@ -214,7 +214,7 @@ FindResult* Find(String* s, String* a)
     return fr;
 }
 
-FindResult* FindFrom(uint pos, String* s, String* a)
+FindResult* FindFrom(uint pos, const String* s, const String* a)
 {
     FindResult* fr = (FindResult*)GC_MALLOC(sizeof(FindResult));
     if (fr == nil) {
@@ -222,7 +222,7 @@ FindResult* FindFrom(uint pos, String* s, String* a)
     }
     String* tmp = NewString(s->contents);
     if ((Len(tmp) - pos) < 0) {
-        fr->err = ErrorfuConstChar("invalid position given to FindFrom: %u", pos);
+        fr->err = ErrorfUintConstChar("invalid position given to FindFrom: %u", pos);
         return fr;
     }
     // Shift the string to the left, removing the first pos characters.
@@ -234,13 +234,13 @@ FindResult* FindFrom(uint pos, String* s, String* a)
     return fr;
 }
 
-uint Count(String* s, String* e)
+uint Count(const String* s, const String* e)
 {
     // printf("Looking for %s in %s.\n", e->contents, s->contents);
     uint counter = 0;
     uint next_pos = 0;
     FindResult* fr = FindFrom(next_pos, s, e);
-    Error* err = FindResultToError(fr);
+    const Error* err = FindResultToError(fr);
     while (err == nil) {
         // Count a search that did not return an error
         counter++;
@@ -265,7 +265,7 @@ uint FindResultToPos(FindResult* fr)
     return fr->pos;
 }
 
-Error* FindResultToError(FindResult* fr)
+const Error* FindResultToError(FindResult* fr)
 {
     if (fr == nil) {
         panicConstChar("FindResultToError was given an uninitialized FindResult*");
@@ -273,16 +273,16 @@ Error* FindResultToError(FindResult* fr)
     return fr->err;
 }
 
-String* FindResultToString(FindResult* fr)
+const String* FindResultToString(FindResult* fr)
 {
-    Error* err = FindResultToError(fr);
+    const Error* err = FindResultToError(fr);
     if (err != nil) {
         return Combine(NewString("Could not find string: "), ErrorToString(err));
     }
     return SprintfUint(NewString("Found the string at position %u."), FindResultToPos(fr));
 }
 
-String* Sprintf(String* fmt, String* a)
+const String* Sprintf(const String* fmt, const String* a)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, a->contents) + 1;
@@ -296,7 +296,7 @@ String* Sprintf(String* fmt, String* a)
     return NewString(msg);
 }
 
-String* Sprintf2(String* fmt, String* a, String* b)
+const String* Sprintf2(const String* fmt, const String* a, const String* b)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, a->contents, b->contents) + 1;
@@ -310,7 +310,7 @@ String* Sprintf2(String* fmt, String* a, String* b)
     return NewString(msg);
 }
 
-String* SprintfUint(String* fmt, uint u)
+const String* SprintfUint(const String* fmt, uint u)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, u) + 1;
@@ -324,7 +324,7 @@ String* SprintfUint(String* fmt, uint u)
     return NewString(msg);
 }
 
-String* SprintfChar(String* fmt, char c)
+const String* SprintfChar(const String* fmt, char c)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, c) + 1;
@@ -338,7 +338,7 @@ String* SprintfChar(String* fmt, char c)
     return NewString(msg);
 }
 
-String* Combine(String* a, String* b)
+const String* Combine(const String* a, const String* b)
 {
     // TODO: Use a more efficient implementation, creating a new string of the
     // right capacity, then copying over the characters from string a and b.
@@ -346,7 +346,7 @@ String* Combine(String* a, String* b)
 }
 
 // Append string b at the end of string a. Will modify string a.
-void Append(String* a, String* b)
+void Append(String* a, const String* b)
 {
     for (uint i = 0; i < Len(b); i++) {
         PushChar(a, b->contents[i]);
@@ -356,15 +356,15 @@ void Append(String* a, String* b)
 void AppendConstChar(String* a, const char* b) { Append(a, NewString(b)); }
 
 // Append the result of a sprintf-like format string and a string
-void Appendf(String* a, String* fmt, String* b) { Append(a, Sprintf(fmt, b)); }
+void Appendf(String* a, const String* fmt, const String* b) { Append(a, Sprintf(fmt, b)); }
 
 // Append the result of a sprintf-like format string and uint
-void AppendfUint(String* a, String* fmt, uint u) { Append(a, SprintfUint(fmt, u)); }
+void AppendfUint(String* a, const String* fmt, uint u) { Append(a, SprintfUint(fmt, u)); }
 
 // Append the result of a sprintf-like format string and a char
-void AppendfChar(String* a, String* fmt, char c) { Append(a, SprintfChar(fmt, c)); }
+void AppendfChar(String* a, const String* fmt, char c) { Append(a, SprintfChar(fmt, c)); }
 
-String* Slice(String* s, uint from, uint upto)
+const String* Slice(const String* s, uint from, uint upto)
 {
     if (from >= Len(s)) {
         panicConstChar("can not slice from after the string");
@@ -387,11 +387,11 @@ String* Slice(String* s, uint from, uint upto)
     return s2;
 }
 
-bool Equal(String* a, String* b) { return strcmp(a->contents, b->contents) == 0; }
+bool Equal(const String* a, const String* b) { return strcmp(a->contents, b->contents) == 0; }
 
-bool EqualConstChar(String* a, const char* b) { return strcmp(a->contents, b) == 0; }
+bool EqualConstChar(const String* a, const char* b) { return strcmp(a->contents, b) == 0; }
 
-String* ListString(String* s)
+const String* ListString(const String* s)
 {
     String* sb = NewString("");
     AppendConstChar(sb, "String*");

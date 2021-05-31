@@ -14,24 +14,24 @@
 #define READY NewString("READY")
 #define NL NewStringFromChar('\n')
 
-Error* test_Print()
+const Error* test_Print()
 {
     Print(READY);
     Print(NL);
     return nil;
 }
 
-Error* test_Println()
+const Error* test_Println()
 {
     Println(READY);
     return nil;
 }
 
-Error* test_FileData()
+const Error* test_MustFileData()
 {
     String* filename = NewString("testdata/hello.txt");
     FileData* fd = NewFileData(filename);
-    Error* err = FileDataToError(fd);
+    const Error* err = FileDataToError(fd);
     if (err != nil) {
         return err;
     }
@@ -40,7 +40,22 @@ Error* test_FileData()
     return nil;
 }
 
-Error* test_Shift()
+const Error* test_FileData()
+{
+    String* filename = NewString("testdata/hello.txt");
+    FileData* fd = NewFileData(filename);
+    if (fd == nil) {
+        return NewErrorConstChar("could not allocate memory for a new FileData struct");
+    }
+    if (fd->err != nil) {
+        return fd->err;
+    }
+    Printfu(NewString("%u bytes read.\n"), FileDataLen(fd));
+    Printf2(NewString("Contents of %s: %s\n"), filename, FileDataToString(fd));
+    return nil;
+}
+
+const Error* test_Shift()
 {
     String* s = NewString("hello");
     Shift(s, 1);
@@ -52,7 +67,7 @@ Error* test_Shift()
     return nil;
 }
 
-Error* test_Trim()
+const Error* test_Trim()
 {
     String* s1 = NewString("   \na string that is not\ntrimmed  \t   \n  \t\n");
     Print(NewString("|"));
@@ -76,14 +91,14 @@ Error* test_Trim()
     return nil;
 }
 
-Error* test_Find()
+const Error* test_Find()
 {
     FindResult* fr = Find(NewString("hello there"), NewString("there"));
     Println(FindResultToString(fr));
     return nil;
 }
 
-Error* test_Count()
+const Error* test_Count()
 {
     String* s = NewString("a b c d d e f f f f");
     uint c = Count(s, NewString("f"));
@@ -95,29 +110,29 @@ Error* test_Count()
     return nil;
 }
 
-Error* test_MustRead()
+const Error* test_MustRead()
 {
-    Print(MustRead(NewString("testdata/hello.txt")));
-    printf("%s", MustReadConstChar("testdata/hello.txt"));
+    Print(MustReadFile(NewString("testdata/hello.txt")));
+    printf("%s", MustReadFileConstChar("testdata/hello.txt"));
     return nil;
 }
 
-Error* test_Slice()
+const Error* test_Slice()
 {
-    String* n = NewString("hello there you");
-    String* there = Slice(n, 6, 11);
+    const String* n = NewString("hello there you");
+    const String* there = Slice(n, 6, 11);
     Println(there);
     return nil;
 }
 
-Error* test_Combine()
+const Error* test_Combine()
 {
     String* n = NewString("hello there you");
     Println(Combine(NewString("STRING: "), n));
     return nil;
 }
 
-Error* test_StringList()
+const Error* test_StringList()
 {
     String* n = NewString("hello there you");
 
@@ -144,7 +159,7 @@ Error* test_StringList()
     return nil;
 }
 
-Error* test_Fields()
+const Error* test_Fields()
 {
     String* s2 = NewString("hello there you");
     Println(s2);
@@ -159,7 +174,7 @@ Error* test_Fields()
     return nil;
 }
 
-Error* test_Lines()
+const Error* test_Lines()
 {
     String* s2 = NewString("hello\nthere\nyou\n");
     Println(s2);
@@ -168,7 +183,7 @@ Error* test_Lines()
     return nil;
 }
 
-Error* test_SplitChar()
+const Error* test_SplitChar()
 {
     String* s3 = NewString("These\nare\non\nseparate\nlines");
     Println(s3);
@@ -177,18 +192,18 @@ Error* test_SplitChar()
     return nil;
 }
 
-Error* test_Join()
+const Error* test_Join()
 {
     String* s3 = NewString("These\nare\non\nseparate\nlines");
     Println(s3);
     StringList* sl = SplitChar(s3, '\n');
     PrintStringList(sl);
-    String* separatedByArrows = JoinConstChar(sl, "->");
+    const String* separatedByArrows = JoinConstChar(sl, "->");
     Println(separatedByArrows);
     return nil;
 }
 
-Error* test_Split()
+const Error* test_Split()
 {
     String* separatedByArrows = NewString("hello->you->there");
     StringList* sl = Split(separatedByArrows, NewString("->"));
@@ -203,10 +218,17 @@ int main(int argc, char* argv[])
     test_Print();
 
     // Test reading in a small text file, and error handling
-    Error* err = test_FileData();
+    const Error* err = test_FileData();
     if (err != nil) {
         String* situation = NewString("reading file");
         panicWhen(situation, err);
+    }
+
+    // Test reading in a small text file, and error handling
+    err = test_MustFileData();
+    if (err != nil) {
+        String* situation = NewString("reading file");
+         panicWhen(situation, err);
     }
 
     // Test shifting strings left and right

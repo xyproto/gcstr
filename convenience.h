@@ -2,11 +2,18 @@
 
 #include "structs.h"
 
-// MustRead takes a filename and returns the contents as a String*.
-// May panic if there are issues.
-String* MustRead(String* filename);
+// ReadFile reads the given file into the given contents *String.
+// An Error* is returned if there are issues.
+const Error* ReadFile(const String* filename, String* contents);
 
-// MustReadConstChar takes a filename and returns the contents as a
-// const char* string.
+// ReadFileConstChar reads the given file into the given contents *char.
+// An Error* is returned if there are issues.
+const Error* ReadFileConstChar(const char* filename, char* contents);
+
+// MustReadFile takes a filename and returns the contents as a String*.
 // May panic if there are issues.
-const char* MustReadConstChar(const char* filename);
+const String* MustReadFile(const String* filename);
+
+// MustReadFileConstChar takes a filename and returns the contents as a
+// const char* string. May panic if there are issues.
+const char* MustReadFileConstChar(const char* filename);

@@ -7,7 +7,17 @@
 #include "panic.h"
 #include "str.h"
 
-Error* NewError(String* message)
+const Error* NewError(const String* message)
+{
+    Error* err = (Error*)GC_MALLOC(sizeof(Error));
+    if (err == nil) { // check if not allocated
+    	return nil; // could not allocate an Error struct
+    }
+    err->message = message;
+    return err;
+}
+
+const Error* MustNewError(const String* message)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
@@ -17,7 +27,7 @@ Error* NewError(String* message)
     return err;
 }
 
-Error* NewErrorConstChar(const char* message)
+const Error* NewErrorConstChar(const char* message)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
@@ -27,21 +37,21 @@ Error* NewErrorConstChar(const char* message)
     return err;
 }
 
-String* ErrorToString(Error* err) { return err->message; }
+const String* ErrorToString(const Error* err) { return err->message; }
 
-const char* ErrorToConstChar(Error* err) { return StringToConstChar(err->message); }
+const char* ErrorToConstChar(const Error* err) { return StringToConstChar(err->message); }
 
-Error* Errorf1ConstChar(const char* fmt, const char* s)
+const Error* ErrorfConstChar(const char* fmt, const char* s)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in Errorf1ConstChar");
+        panicConstChar("could not allocate memory in ErrorfConstChar");
     }
     err->message = Sprintf(NewStringNoCopy(fmt), NewStringNoCopy(s));
     return err;
 }
 
-Error* Errorf2ConstChar(const char* fmt, const char* a, const char* b)
+const Error* Errorf2ConstChar(const char* fmt, const char* a, const char* b)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
@@ -51,27 +61,27 @@ Error* Errorf2ConstChar(const char* fmt, const char* a, const char* b)
     return err;
 }
 
-Error* ErrorfuConstChar(const char* fmt, uint u)
+const Error* ErrorfUintConstChar(const char* fmt, uint u)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in ErrorfuConstChar");
+        panicConstChar("could not allocate memory in ErrorfUintConstChar");
     }
     err->message = SprintfUint(NewStringNoCopy(fmt), u);
     return err;
 }
 
-Error* Errorf1(String* fmt, String* s)
+const Error* Errorf(const String* fmt, const String* s)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panic(NewString("could not allocate memory in Errorf1"));
+        panic(NewString("could not allocate memory in Errorf"));
     }
     err->message = Sprintf(fmt, s);
     return err;
 }
 
-Error* Errorf2(String* fmt, String* a, String* b)
+const Error* Errorf2(const String* fmt, const String* a, const String* b)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
@@ -81,11 +91,11 @@ Error* Errorf2(String* fmt, String* a, String* b)
     return err;
 }
 
-Error* Errorfu(String* fmt, uint u)
+const Error* ErrorfUint(const String* fmt, uint u)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panic(NewString("could not allocate memory in Errorfu"));
+        panic(NewString("could not allocate memory in ErrorfUint"));
     }
     err->message = SprintfUint(fmt, u);
     return err;

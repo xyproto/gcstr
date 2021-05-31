@@ -13,7 +13,7 @@ StringList* NewStringList()
 {
     StringList* sl = (StringList*)GC_MALLOC(sizeof(StringList));
     if (sl == nil) {
-        panicConstChar("Could not allocate memory in NewStringList");
+        panicConstChar("could not allocate memory in NewStringList");
     }
     // Set an empty string value
     sl->value = NewString("");
@@ -22,32 +22,37 @@ StringList* NewStringList()
     return sl;
 }
 
-void StringListPush(StringList* sl, String* s)
+void StringListPush(StringList* sl, const String* s)
 {
     if (sl == nil) {
-        panicConstChar("The given StringList* to StringListPush must be initialized");
+        panicConstChar("the given StringList* must be initialized");
     }
+
     StringList* current = LastStringListNode(sl);
     StringList* next = (StringList*)GC_MALLOC(sizeof(StringList));
     if (next == nil) {
-        panicConstChar("Could not allocate memory in StringListPush");
+        panicConstChar("could not allocate memory in StringListPush");
     }
-    next->value = s;
+    next->value = (String*)s;
     next->next = nil;
     current->next = next;
 }
 
-String* StringListPop(StringList* sl)
+const String* StringListPop(StringList* sl)
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     if (sl->next == nil) {
         // We are at the only node, return this string and set self to nil
-        String* retval = sl->value;
+        const String* retval = sl->value;
         sl = nil;
         return retval;
     }
     StringList* almostLast = BeforeLastStringListNode(sl);
     // Get the value of the last node
-    String* retval = almostLast->next->value;
+    const String* retval = almostLast->next->value;
     // Disconnect the last node
     almostLast->next = nil;
     // Return the string
@@ -56,6 +61,10 @@ String* StringListPop(StringList* sl)
 
 uint StringListLen(StringList* sl)
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     uint counter = 1;
     StringNode* current = sl;
     while (current->next != nil) {
@@ -67,6 +76,10 @@ uint StringListLen(StringList* sl)
 
 StringList* LastStringListNode(StringList* sl)
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     StringNode* current = sl;
     while (current->next != nil) {
         current = current->next;
@@ -76,6 +89,10 @@ StringList* LastStringListNode(StringList* sl)
 
 StringList* BeforeLastStringListNode(StringList* sl)
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     StringNode* prev = nil;
     StringNode* current = sl;
     while (current->next != nil) {
@@ -86,7 +103,7 @@ StringList* BeforeLastStringListNode(StringList* sl)
 }
 
 // Lines splits a string on the newline character. No trimming.
-StringList* Lines(String* s)
+StringList* Lines(const String* s)
 {
     StringList* sl = NewStringList();
     StringList* current = sl;
@@ -108,17 +125,17 @@ StringList* Lines(String* s)
 }
 
 // Split splits a string on the given separator. No trimming.
-StringList* Split(String* s, String* sep)
+StringList* Split(const String* s, const String* sep)
 {
     StringList* sl = NewStringList();
     uint next_pos = 0;
     FindResult* fr = FindFrom(next_pos, s, sep);
-    Error* err = FindResultToError(fr);
+    const Error* err = FindResultToError(fr);
     bool first = true; // Not very elegant, but it works
     while (err == nil) {
         // Add strings from searches that did not return an error
         if (first) {
-            sl->value = Slice(s, next_pos, FindResultToPos(fr));
+            sl->value = (String*)Slice(s, next_pos, FindResultToPos(fr));
             first = false;
         } else {
             StringListPush(sl, Slice(s, next_pos, FindResultToPos(fr)));
@@ -137,9 +154,13 @@ StringList* Split(String* s, String* sep)
     return sl;
 }
 
-// Join the given StringList* to a single String*, given a separator.
-String* Join(StringList* sl, String* sep)
+// Join the strings in a given StringList* to a single String*, given a separator.
+const String* Join(StringList* sl, const String* sep)
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     String* sb = NewString("");
     StringNode* current = sl;
     while (current->next != nil) {
@@ -152,7 +173,7 @@ String* Join(StringList* sl, String* sep)
 }
 
 // Join the given StringList* to a single String*, given a separator.
-String* JoinConstChar(StringList* sl, const char* sep)
+const String* JoinConstChar(StringList* sl, const char* sep)
 {
     String* sb = NewString("");
     StringNode* current = sl;
@@ -166,7 +187,7 @@ String* JoinConstChar(StringList* sl, const char* sep)
 }
 
 // SplitChar will split a string on a single character. No trimming.
-StringList* SplitChar(String* s, char c)
+StringList* SplitChar(const String* s, char c)
 {
     StringList* sl = NewStringList();
     StringList* current = sl;
@@ -190,7 +211,7 @@ StringList* SplitChar(String* s, char c)
 }
 
 // Fields will split a string on any whitespace and trim the values.
-StringList* Fields(String* s)
+StringList* Fields(const String* s)
 {
     StringList* sl = NewStringList();
     StringList* current = sl;
@@ -216,15 +237,33 @@ StringList* Fields(String* s)
 }
 
 // FirstString returns the first string in the given StringList*
-String* FirstString(StringList* sl) { return sl->value; }
+const String* FirstString(StringList* sl)
+{
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
+    return sl->value;
+}
 
 // LastString returns the last string in the given StringList*
-String* LastString(StringList* sl) { return LastStringListNode(sl)->value; }
+const String* LastString(StringList* sl)
+{
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
+    return LastStringListNode(sl)->value;
+}
 
 // StringListForEach will apply the given function to each index and element in
 // the given StringList*.
-void StringListForEach(StringList* sl, void (*f)(uint i, String* s))
+void StringListForEach(StringList* sl, void (*f)(uint i, const const String* s))
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     StringNode* current = sl;
     uint i = 0;
     while (current->next != nil) {
@@ -239,6 +278,10 @@ void StringListForEach(StringList* sl, void (*f)(uint i, String* s))
 // function.
 void StringListMap(StringList* sl, void (*f)(String* s))
 {
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
     StringNode* current = sl;
     while (current->next != nil) {
         f(current->value);
@@ -248,7 +291,14 @@ void StringListMap(StringList* sl, void (*f)(String* s))
 }
 
 // TrimAll will trim whitespace from all strings in the given StringList*
-void TrimAll(StringList* sl) { StringListMap(sl, Trim); }
+void TrimAll(StringList* sl)
+{
+    if (sl == nil) {
+        panicConstChar("the given StringList* must be initialized");
+    }
+
+    StringListMap(sl, Trim);
+}
 
 // StringListFromArgs will create a new StringList* from the given count and
 // char* array.

@@ -5,19 +5,19 @@
 #include "stringlist.h"
 #include "structs.h"
 
-void Print(String* s) { fputs(s->contents, stdout); }
+void Print(const String* s) { fputs(s->contents, stdout); }
 
-void Println(String* s) { puts(s->contents); }
+void Println(const String* s) { puts(s->contents); }
 
-void Printf1(String* fmt, String* a) { Print(Sprintf(fmt, a)); }
+void Printf1(const String* fmt, const String* a) { Print(Sprintf(fmt, a)); }
 
-void Printf2(String* fmt, String* a, String* b) { Print(Sprintf2(fmt, a, b)); }
+void Printf2(const String* fmt, const String* a, const String* b) { Print(Sprintf2(fmt, a, b)); }
 
-void Printfu(String* fmt, uint u) { Print(SprintfUint(fmt, u)); }
+void Printfu(const String* fmt, uint u) { Print(SprintfUint(fmt, u)); }
 
 void Flush() { fflush(stdout); }
 
-void PrintStringElement(uint i, String* s) { printf("\t[%u] %s\n", i, s->contents); }
+void PrintStringElement(uint i, const String* s) { printf("\t[%u] %s\n", i, s->contents); }
 
 void PrintStringList(StringList* sl)
 {
