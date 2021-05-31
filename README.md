@@ -42,7 +42,7 @@ Safe garbage collected strings for C, inspired by Go.
 
     mkdir -p build
     cd build
-    cmake 3.0.0 -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
+    cmake 4.0.0 -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
     ninja
 
 ### Install
@@ -51,6 +51,6 @@ Safe garbage collected strings for C, inspired by Go.
 
 ## General info
 
-* Version: 3.0.0
+* Version: 4.0.0
 * License: BSD
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
