@@ -36,6 +36,8 @@ install(TARGETS ${PROJECT_NAME}
 
 set(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_PREFIX}/share/cmake/${PROJECT_NAME})
 
+set(INSTALL_PC_DIR ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+
 install(FILES
   convenience.h
   error.h
@@ -54,5 +56,12 @@ install(FILES
 install(FILES
   gcstr-config.cmake
   gcstr-config-version.cmake
-  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev
+  DESTINATION "${INSTALL_CMAKE_DIR}"
+  COMPONENT dev
+)
+
+install(FILES
+  gcstr.pc
+  DESTINATION "${INSTALL_PC_DIR}"
+  COMPONENT dev
 )
