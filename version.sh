@@ -12,7 +12,4 @@ if [ -z "$1" ]; then
 fi
 
 echo "Setting the version to $VERSION"
-
-sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" README.md
-sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" gcstr.pc
-sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" "$0"
+sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" README.md gcstr.pc "$0"
