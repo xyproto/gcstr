@@ -1,7 +1,7 @@
 .PHONY: clean fmt lib
 
 CC ?= gcc
-CFLAGS ?= -std=c11 -O2 -pipe -fPIC -fstack-protector-strong -D_GNU_SOURCE -Wfatal-errors
+CFLAGS ?= -O2 -pipe -fPIC -fstack-protector-strong -D_GNU_SOURCE -Wfatal-errors
 STYLE ?= WebKit, ColumnLimit: 99
 DESTDIR ?=
 PREFIX ?= /usr
