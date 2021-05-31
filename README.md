@@ -15,6 +15,10 @@ Safe garbage collected strings for C, inspired by Go.
 * The `Error*` type can be `nil` to indicate no error. Otherwise, it should contain info about the error.
 * In lack of generics, use function signatures that contains the types, like `const char* ErrorToConstChar(Error* err);`. It's verbose, but clear.
 * Make things correct first, then fast later.
+* All functions may panic if memory can not be allocated.
+* If functions may panic for other reasons, the function name must be prefixed with **Must**.
+* Error messages should start with a lowercase letter and not end with punctuation.
+* The API is stable for each major version number.
 
 ## Building and running tests
 
