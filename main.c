@@ -35,7 +35,7 @@ const Error* test_MustFileData()
     if (err != nil) {
         return err;
     }
-    Printfu(NewString("%u bytes read.\n"), FileDataLen(fd));
+    PrintfUint(NewString("%u bytes read.\n"), FileDataLen(fd));
     Printf2(NewString("Contents of %s: %s\n"), filename, FileDataToString(fd));
     return nil;
 }
@@ -50,7 +50,7 @@ const Error* test_FileData()
     if (fd->err != nil) {
         return fd->err;
     }
-    Printfu(NewString("%u bytes read.\n"), FileDataLen(fd));
+    PrintfUint(NewString("%u bytes read.\n"), FileDataLen(fd));
     Printf2(NewString("Contents of %s: %s\n"), filename, FileDataToString(fd));
     return nil;
 }
@@ -59,11 +59,11 @@ const Error* test_Shift()
 {
     String* s = NewString("hello");
     Shift(s, 1);
-    Printf1(NewString("string shifted 1 to the right: %s\n"), s);
+    Printf(NewString("string shifted 1 to the right: %s\n"), s);
     Shift(s, -1);
-    Printf1(NewString("string shifted 1 to the left: %s\n"), s);
+    Printf(NewString("string shifted 1 to the left: %s\n"), s);
     Shift(s, -1);
-    Printf1(NewString("string shifted 1 to the left: %s\n"), s);
+    Printf(NewString("string shifted 1 to the left: %s\n"), s);
     return nil;
 }
 
@@ -102,11 +102,11 @@ const Error* test_Count()
 {
     String* s = NewString("a b c d d e f f f f");
     uint c = Count(s, NewString("f"));
-    Printfu(NewString("f count: %u\n"), c);
+    PrintfUint(NewString("f count: %u\n"), c);
 
     s = NewString("a b c d d e fu fu fe fe fe fe fe fe fe fu");
     c = Count(s, NewString("fe"));
-    Printfu(NewString("fe count: %u\n"), c);
+    PrintfUint(NewString("fe count: %u\n"), c);
     return nil;
 }
 

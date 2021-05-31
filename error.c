@@ -11,7 +11,7 @@ const Error* NewError(const String* message)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-    	return nil; // could not allocate an Error struct
+        panic(NewString("could not allocate memory in NewError"));
     }
     err->message = message;
     return err;
@@ -21,7 +21,7 @@ const Error* MustNewError(const String* message)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panic(NewString("could not allocate memory in NewError"));
+        panic(NewString("could not allocate memory in MustNewError"));
     }
     err->message = message;
     return err;

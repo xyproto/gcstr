@@ -2,10 +2,12 @@
 
 #include "structs.h"
 
-// NewError creates a new Error struct, containing the given message
+// NewError creates a new Error struct, containing the given message.
+// May panic if memory for an Error struct can not be allocated.
 const Error* NewError(const String* message);
 
-// MustNewError creates a new Error struct, containing the given message
+// MustNewError creates a new Error struct, containing the given message.
+// May panic if memory for an Error struct can not be allocated.
 const Error* MustNewError(const String* message);
 
 // NewErrorCharPtr creates a new Error struct, containing the given message
