@@ -4,7 +4,7 @@
 #
 
 # The current version goes here, as the default value
-VERSION=${1:-'2.0.0'}
+VERSION=${1:-'3.0.0'}
 
 if [ -z "$1" ]; then
   echo "The current version is $VERSION, pass the new version as the first argument if you wish to change it"
@@ -12,4 +12,4 @@ if [ -z "$1" ]; then
 fi
 
 echo "Setting the version to $VERSION"
-sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" README.md gcstr.pc "$0"
+sed -i "s/[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*/$VERSION/g" README.md gcstr.pc gcstr-config-version.cmake "$0"
