@@ -18,7 +18,7 @@ String* NewString(const char* contents)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("could not allocate memory in NewString\n");
+        panicCharPtr("could not allocate memory in NewString\n");
     }
     s->len = strlen(contents);
     if (s->len == 0) {
@@ -28,9 +28,33 @@ String* NewString(const char* contents)
     }
     s->contents = (char*)GC_MALLOC(s->cap);
     if (s->contents == nil) {
-        panicConstChar("could not allocate memory in NewString (s->contents)\n");
+        panicCharPtr("could not allocate memory in NewString (s->contents)\n");
     }
     strcpy(s->contents, contents);
+    return s;
+}
+
+String* NewStringMaxSize(const char* contents, size_t max_size)
+{
+    String* s = (String*)GC_MALLOC(sizeof(String));
+    if (s == nil) {
+        panicCharPtr("could not allocate memory in NewStringMaxSize\n");
+    }
+    s->len = strnlen(contents, max_size);
+    if (s->len == 0) {
+        if (defaultStringBufferSize < max_size) {
+            s->cap = defaultStringBufferSize;
+        } else {
+            s->cap = max_size;
+        }
+    } else {
+        s->cap = s->len * 2;
+    }
+    s->contents = (char*)GC_MALLOC(s->cap);
+    if (s->contents == nil) {
+        panicCharPtr("could not allocate memory in NewStringMaxSize (s->contents)\n");
+    }
+    strncpy(s->contents, contents, max_size);
     return s;
 }
 
@@ -38,9 +62,21 @@ String* NewStringNoCopy(const char* contents)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("could not allocate memory in NewStringNoCopy\n");
+        panicCharPtr("could not allocate memory in NewStringNoCopy\n");
     }
     s->len = strlen(contents);
+    s->cap = s->len;
+    s->contents = (char*)contents;
+    return s;
+}
+
+String* NewStringNoCopyMaxSize(const char* contents, size_t max_size)
+{
+    String* s = (String*)GC_MALLOC(sizeof(String));
+    if (s == nil) {
+        panicCharPtr("could not allocate memory in NewStringNoCopyMaxSize\n");
+    }
+    s->len = strnlen(contents, max_size);
     s->cap = s->len;
     s->contents = (char*)contents;
     return s;
@@ -50,13 +86,13 @@ String* NewStringFromChar(char c)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
     if (s == nil) {
-        panicConstChar("could not allocate memory in NewStringFromChar\n");
+        panicCharPtr("could not allocate memory in NewStringFromChar\n");
     }
     s->len = 1;
     s->cap = 1;
     s->contents = (char*)GC_MALLOC(s->cap);
     if (s->contents == nil) {
-        panicConstChar("could not allocate memory in NewStringFromChar (s->contents)\n");
+        panicCharPtr("could not allocate memory in NewStringFromChar (s->contents)\n");
     }
     s->contents[0] = c;
     return s;
@@ -75,11 +111,11 @@ void PushChar(String* s, char c)
     if (s->len >= s->cap) {
         s->cap *= 2;
         if (s->cap == 0) {
-            panicConstChar("String capacity is 0 in PushChar");
+            panicCharPtr("String capacity is 0 in PushChar");
         }
         s->contents = (char*)GC_REALLOC(s->contents, s->cap);
         if (s->contents == nil) {
-            panicConstChar("could not reallocate memory in PushChar");
+            panicCharPtr("could not reallocate memory in PushChar");
         }
     }
     s->contents[s->len++] = c;
@@ -98,11 +134,11 @@ void Shift(String* s, int offset)
     if (newLength > s->cap) {
         s->cap *= 2;
         if (s->cap == 0) {
-            panicConstChar("Can not shift a string with zero capacity");
+            panicCharPtr("Can not shift a string with zero capacity");
         }
         s->contents = (char*)GC_REALLOC(s->contents, s->cap);
         if (s->contents == nil) {
-            panicConstChar("could not reallocate memory in Shift");
+            panicCharPtr("could not reallocate memory in Shift");
         }
     }
     // Nothing left, return an empty string
@@ -145,7 +181,7 @@ void LeftPushChar(String* s, char c)
     s->contents[0] = c;
 }
 
-const char* StringToConstChar(const String* s) { return s->contents; }
+const char* StringToCharPtr(const String* s) { return s->contents; }
 
 bool HasChar(const String* s, char c)
 {
@@ -193,16 +229,16 @@ FindResult* Find(const String* s, const String* a)
 {
     FindResult* fr = (FindResult*)GC_MALLOC(sizeof(FindResult));
     if (fr == nil) {
-        panicConstChar("could not allocate memory in Find");
+        panicCharPtr("could not allocate memory in Find");
     }
     fr->err = nil;
     fr->pos = 0;
     if (Len(a) == 0) {
-        fr->err = NewErrorConstChar("searching for an empty string");
+        fr->err = NewErrorCharPtr("searching for an empty string");
         return fr;
     }
     if (Len(s) == 0) {
-        fr->err = NewErrorConstChar("searching in an empty string");
+        fr->err = NewErrorCharPtr("searching in an empty string");
     }
     char* p = strstr(s->contents, a->contents);
     if (p == nil) {
@@ -218,11 +254,11 @@ FindResult* FindFrom(uint pos, const String* s, const String* a)
 {
     FindResult* fr = (FindResult*)GC_MALLOC(sizeof(FindResult));
     if (fr == nil) {
-        panicConstChar("could not allocate memory in Find");
+        panicCharPtr("could not allocate memory in Find");
     }
     String* tmp = NewString(s->contents);
     if ((Len(tmp) - pos) < 0) {
-        fr->err = ErrorfUintConstChar("invalid position given to FindFrom: %u", pos);
+        fr->err = ErrorfUintCharPtr("invalid position given to FindFrom: %u", pos);
         return fr;
     }
     // Shift the string to the left, removing the first pos characters.
@@ -260,7 +296,7 @@ uint Count(const String* s, const String* e)
 uint FindResultToPos(FindResult* fr)
 {
     if (fr == nil) {
-        panicConstChar("FindResultToPos was given an uninitialized FindResult*");
+        panicCharPtr("FindResultToPos was given an uninitialized FindResult*");
     }
     return fr->pos;
 }
@@ -268,7 +304,7 @@ uint FindResultToPos(FindResult* fr)
 const Error* FindResultToError(FindResult* fr)
 {
     if (fr == nil) {
-        panicConstChar("FindResultToError was given an uninitialized FindResult*");
+        panicCharPtr("FindResultToError was given an uninitialized FindResult*");
     }
     return fr->err;
 }
@@ -289,7 +325,7 @@ const String* Sprintf(const String* fmt, const String* a)
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in Sprintf");
+        panicCharPtr("could not allocate memory in Sprintf");
     }
     snprintf(msg, buf_size, fmt->contents, a->contents);
     msg[buf_size - 1] = 0;
@@ -303,7 +339,7 @@ const String* Sprintf2(const String* fmt, const String* a, const String* b)
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in Sprintf2");
+        panicCharPtr("could not allocate memory in Sprintf2");
     }
     snprintf(msg, buf_size, fmt->contents, a->contents, b->contents);
     msg[buf_size - 1] = 0;
@@ -317,7 +353,7 @@ const String* SprintfUint(const String* fmt, uint u)
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in SprintfUint");
+        panicCharPtr("could not allocate memory in SprintfUint");
     }
     snprintf(msg, buf_size, fmt->contents, u);
     msg[buf_size - 1] = 0;
@@ -331,7 +367,7 @@ const String* SprintfChar(const String* fmt, char c)
     // Allocate just enough memory
     char* msg = (char*)GC_MALLOC(buf_size);
     if (msg == nil) {
-        panicConstChar("could not allocate memory in SprintfChar");
+        panicCharPtr("could not allocate memory in SprintfChar");
     }
     snprintf(msg, buf_size, fmt->contents, c);
     msg[buf_size - 1] = 0;
@@ -353,7 +389,13 @@ void Append(String* a, const String* b)
     }
 }
 
-void AppendConstChar(String* a, const char* b) { Append(a, NewString(b)); }
+// AppendChar is an alias for PushChar
+void AppendChar(String* a, char b)
+{
+    PushChar(a, b);
+}
+
+void AppendCharPtr(String* a, const char* b) { Append(a, NewString(b)); }
 
 // Append the result of a sprintf-like format string and a string
 void Appendf(String* a, const String* fmt, const String* b) { Append(a, Sprintf(fmt, b)); }
@@ -367,10 +409,10 @@ void AppendfChar(String* a, const String* fmt, char c) { Append(a, SprintfChar(f
 const String* Slice(const String* s, uint from, uint upto)
 {
     if (from >= Len(s)) {
-        panicConstChar("can not slice from after the string");
+        panicCharPtr("can not slice from after the string");
     }
     if (upto < from) {
-        panicConstChar("when calling Slice, up to is smaller than from");
+        panicCharPtr("when calling Slice, up to is smaller than from");
     }
     // Clamp upto if it is too high
     if (upto >= Len(s)) {
@@ -387,27 +429,41 @@ const String* Slice(const String* s, uint from, uint upto)
     return s2;
 }
 
-bool Equal(const String* a, const String* b) { return strcmp(a->contents, b->contents) == 0; }
+bool Equal(const String* a, const String* b)
+{
+    if (a->len == 0 && b->len == 0) { // both strings are empty
+        return true;
+    } else if (a->len != b->len) { // different length
+        return false;
+    }
+    return strncmp(a->contents, b->contents, a->len) == 0; // equality check
+}
 
-bool EqualConstChar(const String* a, const char* b) { return strcmp(a->contents, b) == 0; }
+bool EqualCharPtr(const String* a, const char* b)
+{
+    if (a->len == 0 && b[0] == 0) { // both strings are empty
+        return true;
+    }
+    return strncmp(a->contents, b, a->len) == 0; // equality check
+}
 
 const String* ListString(const String* s)
 {
     String* sb = NewString("");
-    AppendConstChar(sb, "String*");
+    AppendCharPtr(sb, "String*");
     if (s == nil) {
-        AppendConstChar(sb, "\tuninitialized");
+        AppendCharPtr(sb, "\tuninitialized");
         return sb;
     }
     if (s->contents == nil) {
-        AppendConstChar(sb, "\tuninitialized contents");
+        AppendCharPtr(sb, "\tuninitialized contents");
         return sb;
     }
     if (s->len == 0) {
-        AppendConstChar(sb, "\t<empty>");
+        AppendCharPtr(sb, "\t<empty>");
         return sb;
     }
-    AppendConstChar(sb, "\n");
+    AppendCharPtr(sb, "\n");
     for (uint i = 0; i < Len(s) - 1; i++) {
         const char c = s->contents[i];
         switch (c) {

@@ -27,11 +27,11 @@ const Error* MustNewError(const String* message)
     return err;
 }
 
-const Error* NewErrorConstChar(const char* message)
+const Error* NewErrorCharPtr(const char* message)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in NewErrorConstChar");
+        panicCharPtr("could not allocate memory in NewErrorCharPtr");
     }
     err->message = NewStringNoCopy(message);
     return err;
@@ -39,33 +39,33 @@ const Error* NewErrorConstChar(const char* message)
 
 const String* ErrorToString(const Error* err) { return err->message; }
 
-const char* ErrorToConstChar(const Error* err) { return StringToConstChar(err->message); }
+const char* ErrorToCharPtr(const Error* err) { return StringToCharPtr(err->message); }
 
-const Error* ErrorfConstChar(const char* fmt, const char* s)
+const Error* ErrorfCharPtr(const char* fmt, const char* s)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in ErrorfConstChar");
+        panicCharPtr("could not allocate memory in ErrorfCharPtr");
     }
     err->message = Sprintf(NewStringNoCopy(fmt), NewStringNoCopy(s));
     return err;
 }
 
-const Error* Errorf2ConstChar(const char* fmt, const char* a, const char* b)
+const Error* Errorf2CharPtr(const char* fmt, const char* a, const char* b)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in Errorf2ConstChar");
+        panicCharPtr("could not allocate memory in Errorf2CharPtr");
     }
     err->message = Sprintf2(NewStringNoCopy(fmt), NewStringNoCopy(a), NewStringNoCopy(b));
     return err;
 }
 
-const Error* ErrorfUintConstChar(const char* fmt, uint u)
+const Error* ErrorfUintCharPtr(const char* fmt, uint u)
 {
     Error* err = (Error*)GC_MALLOC(sizeof(Error));
     if (err == nil) { // check if not allocated
-        panicConstChar("could not allocate memory in ErrorfUintConstChar");
+        panicCharPtr("could not allocate memory in ErrorfUintCharPtr");
     }
     err->message = SprintfUint(NewStringNoCopy(fmt), u);
     return err;

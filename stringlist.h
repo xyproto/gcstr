@@ -14,7 +14,7 @@ StringList* BeforeLastStringListNode(StringList* sl);
 StringList* Lines(const String* s);
 StringList* Split(const String* s, const String* sep);
 const String* Join(StringList* sl, const String* sep);
-const String* JoinConstChar(StringList* sl, const char* sep);
+const String* JoinCharPtr(StringList* sl, const char* sep);
 StringList* SplitChar(const String* s, char c);
 StringList* Fields(const String* s);
 const String* FirstString(StringList* sl);

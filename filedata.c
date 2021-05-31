@@ -18,9 +18,9 @@ FileData* NewFileData(const String* filename)
 {
     FileData* fd = (FileData*)GC_MALLOC(sizeof(FileData));
     if (fd == nil) {
-        panicConstChar("could not allocate memory for a new FileData struct");
+        panicCharPtr("could not allocate memory for a new FileData struct");
     }
-    FILE* f = fopen(StringToConstChar(filename), "rb");
+    FILE* f = fopen(StringToCharPtr(filename), "rb");
     if (f == nil) {
         fd->err = Errorf(NewString("could not open %s"), filename);
         return fd;
@@ -64,9 +64,9 @@ FileData* NewFileData(const String* filename)
     return fd;
 }
 
-FileData* NewFileDataConstChar(const char* filename) { return NewFileData(NewString(filename)); }
+FileData* NewFileDataCharPtr(const char* filename) { return NewFileData(NewString(filename)); }
 
-const char* FileDataToConstChar(FileData* fd) { return fd->data; }
+const char* FileDataToCharPtr(FileData* fd) { return fd->data; }
 
 const String* FileDataToString(FileData* fd) { return NewStringNoCopy(fd->data); }
 

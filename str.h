@@ -7,7 +7,9 @@
 #include "structs.h"
 
 String* NewString(const char* contents);
+String* NewStringMaxSize(const char* contents, size_t max_size);
 String* NewStringNoCopy(const char* contents);
+String* NewStringNoCopyMaxSize(const char* contents, size_t max_size);
 String* NewStringFromChar(char c);
 
 char PopChar(String* s);
@@ -23,7 +25,7 @@ void TrimSep(String* s, const String* sep);
 void Trim(String* s);
 void Shift(String* s, int offset);
 
-const char* StringToConstChar(const String* s);
+const char* StringToCharPtr(const String* s);
 uint Len(const String* s);
 uint Count(const String* s, const String* e);
 
@@ -41,7 +43,8 @@ const String* SprintfChar(const String* fmt, char c);
 const String* Combine(const String* a, const String* b);
 
 void Append(String* a, const String* b);
-void AppendConstChar(String* a, const char* b);
+void AppendChar(String* a, char b);
+void AppendCharPtr(String* a, const char* b);
 void Appendf(String* a, const String* fmt, const String* b);
 void AppendfUint(String* a, const String* fmt, uint u);
 void AppendfChar(String* a, const String* fmt, char c);
@@ -49,6 +52,6 @@ void AppendfChar(String* a, const String* fmt, char c);
 const String* Slice(const String* s, uint from, uint upto);
 
 bool Equal(const String* a, const String* b);
-bool EqualConstChar(const String* a, const char* b);
+bool EqualCharPtr(const String* a, const char* b);
 
 const String* ListString(const String* s);

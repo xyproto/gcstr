@@ -13,7 +13,7 @@ StringList* NewStringList()
 {
     StringList* sl = (StringList*)GC_MALLOC(sizeof(StringList));
     if (sl == nil) {
-        panicConstChar("could not allocate memory in NewStringList");
+        panicCharPtr("could not allocate memory in NewStringList");
     }
     // Set an empty string value
     sl->value = NewString("");
@@ -25,13 +25,13 @@ StringList* NewStringList()
 void StringListPush(StringList* sl, const String* s)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringList* current = LastStringListNode(sl);
     StringList* next = (StringList*)GC_MALLOC(sizeof(StringList));
     if (next == nil) {
-        panicConstChar("could not allocate memory in StringListPush");
+        panicCharPtr("could not allocate memory in StringListPush");
     }
     next->value = (String*)s;
     next->next = nil;
@@ -41,7 +41,7 @@ void StringListPush(StringList* sl, const String* s)
 const String* StringListPop(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     if (sl->next == nil) {
@@ -62,7 +62,7 @@ const String* StringListPop(StringList* sl)
 uint StringListLen(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     uint counter = 1;
@@ -77,7 +77,7 @@ uint StringListLen(StringList* sl)
 StringList* LastStringListNode(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringNode* current = sl;
@@ -90,7 +90,7 @@ StringList* LastStringListNode(StringList* sl)
 StringList* BeforeLastStringListNode(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringNode* prev = nil;
@@ -158,7 +158,7 @@ StringList* Split(const String* s, const String* sep)
 const String* Join(StringList* sl, const String* sep)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     String* sb = NewString("");
@@ -173,7 +173,7 @@ const String* Join(StringList* sl, const String* sep)
 }
 
 // Join the given StringList* to a single String*, given a separator.
-const String* JoinConstChar(StringList* sl, const char* sep)
+const String* JoinCharPtr(StringList* sl, const char* sep)
 {
     String* sb = NewString("");
     StringNode* current = sl;
@@ -240,7 +240,7 @@ StringList* Fields(const String* s)
 const String* FirstString(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     return sl->value;
@@ -250,7 +250,7 @@ const String* FirstString(StringList* sl)
 const String* LastString(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     return LastStringListNode(sl)->value;
@@ -261,7 +261,7 @@ const String* LastString(StringList* sl)
 void StringListForEach(StringList* sl, void (*f)(uint i, const const String* s))
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringNode* current = sl;
@@ -279,7 +279,7 @@ void StringListForEach(StringList* sl, void (*f)(uint i, const const String* s))
 void StringListMap(StringList* sl, void (*f)(String* s))
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringNode* current = sl;
@@ -294,7 +294,7 @@ void StringListMap(StringList* sl, void (*f)(String* s))
 void TrimAll(StringList* sl)
 {
     if (sl == nil) {
-        panicConstChar("the given StringList* must be initialized");
+        panicCharPtr("the given StringList* must be initialized");
     }
 
     StringListMap(sl, Trim);

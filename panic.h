@@ -4,7 +4,7 @@
 
 void panic(const String* msg);
 void panicError(const Error* err);
-void panicConstChar(const char* msg);
+void panicCharPtr(const char* msg);
 void panicWhen(const String* msg, const Error* err);
-void panicWhenConstChar(const char* msg, const Error* err);
+void panicWhenCharPtr(const char* msg, const Error* err);
 void panicIfError(const Error* err);

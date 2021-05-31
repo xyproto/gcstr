@@ -45,7 +45,7 @@ const Error* test_FileData()
     String* filename = NewString("testdata/hello.txt");
     FileData* fd = NewFileData(filename);
     if (fd == nil) {
-        return NewErrorConstChar("could not allocate memory for a new FileData struct");
+        return NewErrorCharPtr("could not allocate memory for a new FileData struct");
     }
     if (fd->err != nil) {
         return fd->err;
@@ -72,7 +72,7 @@ const Error* test_Trim()
     String* s1 = NewString("   \na string that is not\ntrimmed  \t   \n  \t\n");
     Print(NewString("|"));
     Print(s1);
-    printf("printf: %s\n", StringToConstChar(s1));
+    printf("printf: %s\n", StringToCharPtr(s1));
     Println(ListString(s1));
     Println(NewString("|"));
 
@@ -113,7 +113,7 @@ const Error* test_Count()
 const Error* test_MustRead()
 {
     Print(MustReadFile(NewString("testdata/hello.txt")));
-    printf("%s", MustReadFileConstChar("testdata/hello.txt"));
+    printf("%s", MustReadFileCharPtr("testdata/hello.txt"));
     return nil;
 }
 
@@ -147,14 +147,14 @@ const Error* test_StringList()
     Print(NewString("LAST: "));
     Println(LastString(sl));
 
-    if (!EqualConstChar(StringListPop(sl), "you")) {
-        return NewErrorConstChar("the last element in the string should be \"you\"");
+    if (!EqualCharPtr(StringListPop(sl), "you")) {
+        return NewErrorCharPtr("the last element in the string should be \"you\"");
     }
-    if (!EqualConstChar(StringListPop(sl), "there")) {
-        return NewErrorConstChar("the second element in the string should be \"there\"");
+    if (!EqualCharPtr(StringListPop(sl), "there")) {
+        return NewErrorCharPtr("the second element in the string should be \"there\"");
     }
-    if (!EqualConstChar(StringListPop(sl), "hello")) {
-        return NewErrorConstChar("the first element in the string should be \"hello\"");
+    if (!EqualCharPtr(StringListPop(sl), "hello")) {
+        return NewErrorCharPtr("the first element in the string should be \"hello\"");
     }
     return nil;
 }
@@ -198,7 +198,7 @@ const Error* test_Join()
     Println(s3);
     StringList* sl = SplitChar(s3, '\n');
     PrintStringList(sl);
-    const String* separatedByArrows = JoinConstChar(sl, "->");
+    const String* separatedByArrows = JoinCharPtr(sl, "->");
     Println(separatedByArrows);
     return nil;
 }

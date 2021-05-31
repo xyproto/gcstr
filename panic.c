@@ -8,7 +8,7 @@
 void panic(const String* msg)
 {
     if (msg != nil) {
-        fprintf(stderr, "%s\n", StringToConstChar(msg));
+        fprintf(stderr, "%s\n", StringToCharPtr(msg));
     } else {
         fprintf(stderr, "%s\n", "error struct is nil");
     }
@@ -18,14 +18,14 @@ void panic(const String* msg)
 void panicError(const Error* err)
 {
     if (err != nil) {
-        fprintf(stderr, "error: %s\n", ErrorToConstChar(err));
+        fprintf(stderr, "error: %s\n", ErrorToCharPtr(err));
     } else {
         fprintf(stderr, "%s\n", "error struct is nil");
     }
     exit(1);
 }
 
-void panicConstChar(const char* msg)
+void panicCharPtr(const char* msg)
 {
     fprintf(stderr, "%s\n", msg);
     exit(1);
@@ -38,17 +38,17 @@ void panicWhen(const String* msg, const Error* err)
     } else if (err == nil) {
         fprintf(stderr, "%s\n", "error struct is nil");
     } else {
-        fprintf(stderr, "error when %s: %s\n", StringToConstChar(msg), ErrorToConstChar(err));
+        fprintf(stderr, "error when %s: %s\n", StringToCharPtr(msg), ErrorToCharPtr(err));
     }
     exit(1);
 }
 
-void panicWhenConstChar(const char* msg, const Error* err)
+void panicWhenCharPtr(const char* msg, const Error* err)
 {
     if (err == nil) {
         fprintf(stderr, "%s\n", "error struct is nil");
     } else {
-        fprintf(stderr, "error when %s: %s\n", msg, ErrorToConstChar(err));
+        fprintf(stderr, "error when %s: %s\n", msg, ErrorToCharPtr(err));
     }
     exit(1);
 }
@@ -56,7 +56,7 @@ void panicWhenConstChar(const char* msg, const Error* err)
 void panicIfError(const Error* err)
 {
     if (err != nil) {
-        fprintf(stderr, "error: %s\n", ErrorToConstChar(err));
+        fprintf(stderr, "error: %s\n", ErrorToCharPtr(err));
         exit(1);
     }
 }
