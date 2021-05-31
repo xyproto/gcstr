@@ -33,6 +33,6 @@ Alternatively, install [cxx](https://github.com/xyproto/cxx) and use `cxx run`.
 
 ## General info
 
-* Version: 1.0.0
+* Version: 2.0.0
 * License: BSD
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
