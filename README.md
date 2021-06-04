@@ -13,7 +13,7 @@ Safe garbage collected strings for C, inspired by Go.
 * `-1` should never be returned to indicate a problem or that something is not found. Return a struct instead.
 * `String*` should be supported by every function that can take a string.
 * The `Error*` type can be `nil` to indicate no error. Otherwise, it should contain info about the error.
-* In lack of generics, use function signatures that contains the types, like `const char* ErrorToConstChar(Error* err);`. It's verbose, but clear.
+* In lack of generics, use function signatures that contains the types, like `const char* ErrorToCharPtr(Error* err);`. It's verbose, but clear.
 * Make things correct first, then fast later.
 * All functions may panic if memory can not be allocated.
 * If functions may panic for other reasons, the function name must be prefixed with **Must**.
