@@ -40,14 +40,12 @@ Safe garbage collected strings for C, inspired by Go.
 
 ### Build
 
-    mkdir -p build
-    cd build
-    cmake 4.0.0 -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
-    ninja
+    cmake -B build -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
+    ninja -C build
 
 ### Install
 
-    sudo ninja install
+    sudo ninja -C build install
 
 ## General info
 
