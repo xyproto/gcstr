@@ -213,9 +213,8 @@ StringList* SplitChar(const String* s, char c)
 // SplitCharPtr splits a string on the given const char* separator. No trimming.
 StringList* SplitCharPtr(const String* s, const char* sep)
 {
-	return Split(s, NewString(sep));
+    return Split(s, NewString(sep));
 }
-
 
 // Fields will split a string on any whitespace and trim the values.
 StringList* Fields(const String* s)
@@ -281,20 +280,40 @@ void StringListForEach(StringList* sl, void (*f)(uint i, const const String* s))
 }
 
 // StringListMap will apply the given function to each element in
-// the given StringList*. Unlike StringListForEarch, no index is passed to the
+// the given StringList*. Unlike StringListForEach, no index is passed to the
 // function.
 void StringListMap(StringList* sl, void (*f)(String* s))
 {
     if (sl == nil) {
         panicCharPtr("the given StringList* must be initialized");
     }
-
     StringNode* current = sl;
     while (current->next != nil) {
         f(current->value);
         current = current->next;
     }
     f(current->value);
+}
+
+// StringListFilter will apply the given function to each element in
+// the given StringList* and return the elements where the function returns true.
+StringList* StringListFilter(StringList* sl, bool (*f)(String* s))
+{
+    if (sl == nil) {
+        panicCharPtr("the given StringList* must be initialized");
+    }
+    StringList* filteredStringList = NewStringList();
+    StringNode* current = sl;
+    while (current->next != nil) {
+        if (f(current->value)) {
+            StringListPush(filteredStringList, current->value);
+        }
+        current = current->next;
+    }
+    if (f(current->value)) {
+        StringListPush(filteredStringList, current->value);
+    }
+    return filteredStringList;
 }
 
 // TrimAll will trim whitespace from all strings in the given StringList*
