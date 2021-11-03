@@ -208,6 +208,16 @@ const Error* test_Split()
     String* separatedByArrows = NewString("hello->you->there");
     StringList* sl = Split(separatedByArrows, NewString("->"));
     PrintStringList(sl);
+    sl = SplitCharPtr(separatedByArrows, "->");
+    PrintStringList(sl);
+    return nil;
+}
+
+const Error* test_SplitCharPtr()
+{
+    String* separatedByArrows = NewString("a->b->c");
+    StringList* sl = SplitCharPtr(separatedByArrows, "->");
+    PrintStringList(sl);
     return nil;
 }
 
@@ -269,6 +279,9 @@ int main(int argc, char* argv[])
 
     // Test the Split function that can split a string by a separator string
     panicIfError(test_Split());
+
+    // Test the SplitCharPtr function that can split a string by a separator const char*
+    panicIfError(test_SplitCharPtr());
 
     return EXIT_SUCCESS;
 }

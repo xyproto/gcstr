@@ -16,6 +16,7 @@ StringList* Split(const String* s, const String* sep);
 const String* Join(StringList* sl, const String* sep);
 const String* JoinCharPtr(StringList* sl, const char* sep);
 StringList* SplitChar(const String* s, char c);
+StringList* SplitCharPtr(const String* s, const char* sep);
 StringList* Fields(const String* s);
 const String* FirstString(StringList* sl);
 const String* LastString(StringList* sl);
