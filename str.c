@@ -186,22 +186,29 @@ void Shift(String* s, int offset)
         return;
     }
     if (newLength > s->len) {
-        // TODO: Find a more efficient way, by checking s->cap and
-        //       reallocating if needed.
         // Shift the data to the right
+        // Handle overlap manually by iterating backwards.
         for (int i = s->len; i >= 0; i--) {
             s->contents[i + offset] = s->contents[i];
         }
+        // Clear the gap at the beginning
+        for (int i = 0; i < offset; i++) {
+            s->contents[i] = 0;
+        }
+
         s->len = newLength;
         return;
     }
     if (newLength < s->len) {
-        assert(offset < 0);
-        // Shift the data to the left. offset is negative. Move the start of
-        // the string by discarding -offset bytes at the beginning.
-        s->contents = s->contents - offset;
+        // Shift the data to the left. offset is negative.
+        // Move data to the beginning of the buffer manually.
+        // -offset is the start index of the data we want to keep.
+        int start = -offset;
+        for (int i = 0; i < newLength; i++) {
+            s->contents[i] = s->contents[start + i];
+        }
+        s->contents[newLength] = '\0';
         s->len = newLength;
-        s->contents[s->len] = 0; // move zero terminator
         return;
     }
     // This place should never be reached
