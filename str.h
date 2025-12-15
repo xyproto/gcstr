@@ -28,6 +28,7 @@ void TrimSep(String* s, const String* sep);
 void Trim(String* s);
 void Shift(String* s, int offset);
 void Reset(String* s);
+void ResetCap(String* s, uint cap);
 
 const char* StringToCharPtr(const String* s);
 uint Len(const String* s);

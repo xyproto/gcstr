@@ -42,7 +42,7 @@ String* NewStringCap(uint cap)
     if (s == nil) {
         panicCharPtr("could not allocate memory in NewStringCap\n");
     }
-    Reset(s);
+    ResetCap(s, cap);
     return s;
 }
 
@@ -141,15 +141,22 @@ void PushChar(String* s, char c)
     s->contents[s->len] = '\0';
 }
 
-void Reset(String* s)
+// Reset will clear the string and ensure it has a default initial capacity
+void Reset(String* s) { ResetCap(s, defaultStringBufferSize); }
+
+// ResetCap will clear the string and set its capacity
+// If cap is 0, the defaultStringBufferSize will be used.
+void ResetCap(String* s, uint cap)
 {
     s->len = 0;
-    if (s->cap == 0) {
-        s->cap = 1; // make room for the zero terminator
+    if (cap != 0) {
+        s->cap = cap;
+    } else {
+        s->cap = defaultStringBufferSize;
     }
     s->contents = (char*)GC_MALLOC(s->cap);
     if (s->contents == nil) {
-        panicCharPtr("could not allocate memory in StringClear (s->contents)\n");
+        panicCharPtr("could not allocate memory in ResetCap (s->contents)\n");
     }
     s->contents[0] = '\0';
 }
