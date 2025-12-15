@@ -127,7 +127,7 @@ char PopChar(String* s)
 
 void PushChar(String* s, char c)
 {
-    if (s->len >= s->cap) {
+    if (s->len + 1 >= s->cap) {
         s->cap *= 2;
         if (s->cap == 0) {
             panicCharPtr("String capacity is 0 in PushChar");
