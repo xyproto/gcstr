@@ -30,22 +30,16 @@ Safe garbage collected strings for C, inspired by Go.
 
     sudo make install
 
-## [`CXX`](https://github.com/xyproto/cxx)
-
-### Build and run tests
-
-    cxx run
-
 ## CMake and Ninja
 
 ### Build
 
-    cmake -B build -G Ninja -D CMAKE_INSTALL_PREFIX=/usr
-    ninja -C build
+    cmake -B build -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr -S .
+    make -C build
 
 ### Install
 
-    sudo ninja -C build install
+    sudo make -C build install
 
 ## General info
 
