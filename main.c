@@ -222,6 +222,42 @@ const Error* test_SplitCharPtr()
     return nil;
 }
 
+const Error* test_HasPrefix()
+{
+    String* filename = NewString("/tmp/ost.log");
+    if (!HasPrefix(filename, NewString("/tmp/"))) {
+        return NewErrorCharPtr("test_HasPrefix could not detect the prefix");
+    }
+    return nil;
+}
+
+const Error* test_HasPrefixCharPtr()
+{
+    String* filename = NewString("/tmp/ost.log");
+    if (!HasPrefixCharPtr(filename, "/tmp/")) {
+        return NewErrorCharPtr("test_HasPrefixCharPtr could not detect the prefix");
+    }
+    return nil;
+}
+
+const Error* test_HasSuffix()
+{
+    String* filename = NewString("/tmp/ost.log");
+    if (!HasSuffix(filename, NewString(".log"))) {
+        return NewErrorCharPtr("test_HasSuffix could not detect the suffix");
+    }
+    return nil;
+}
+
+const Error* test_HasSuffixCharPtr()
+{
+    String* filename = NewString("/tmp/ost.log");
+    if (!HasSuffixCharPtr(filename, ".log")) {
+        return NewErrorCharPtr("test_HasSuffixCharPtr could not detect the suffix");
+    }
+    return nil;
+}
+
 const Error* test_ShiftReallocSafety()
 {
     String* s = NewString("hello world");
@@ -311,6 +347,18 @@ int main(int argc, char* argv[])
 
     // Test the SplitCharPtr function that can split a string by a separator const char*
     panicIfError(test_SplitCharPtr());
+
+    // Test if HasPrefix can detect a String* prefix
+    panicIfError(test_HasPrefix());
+
+    // Test if HasPrefixCharPtr can detect a char* prefix
+    panicIfError(test_HasPrefixCharPtr());
+
+    // Test if HasSuffix can detect a String* suffix
+    panicIfError(test_HasSuffix());
+
+    // Test if HasSuffixCharPtr can detect a char* suffix
+    panicIfError(test_HasSuffixCharPtr());
 
     return EXIT_SUCCESS;
 }

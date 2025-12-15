@@ -479,7 +479,6 @@ bool HasPrefix(const String* s, const String* prefix)
     if (s->len < prefix->len) {
         return false; // the string is shorter than the prefix
     }
-    // Loop over prefix->len, since we know that this is shorter than s->len
     for (uint i = 0; i < prefix->len; i++) {
         if (s->contents[i] != prefix->contents[i]) {
             return false; // mismatch
@@ -491,9 +490,45 @@ bool HasPrefix(const String* s, const String* prefix)
 bool HasPrefixCharPtr(const String* s, const char* prefix)
 {
     for (uint i = 0; i < s->len; i++) {
-        // this check also catches the case where the null terminator in prefix is reached
+        if (prefix[i] == '\0') {
+            return true; // reached the end of the prefix, and they match
+        }
         if (s->contents[i] != prefix[i]) {
             return false; // mismatch
+        }
+    }
+    // If we reached here, s matches prefix up to s->len.
+    // If prefix[s->len] is '\0', it's a match. Otherwise prefix is longer.
+    return prefix[s->len] == '\0';
+}
+
+bool HasSuffix(const String* s, const String* suffix)
+{
+    if (s->len < suffix->len) {
+        return false; // the string is shorter than the suffix
+    }
+    uint offset = s->len - suffix->len;
+    for (uint i = 0; i < suffix->len; i++) {
+        if (s->contents[offset + i] != suffix->contents[i]) {
+            return false; // mismatch
+        }
+    }
+    return true;
+}
+
+bool HasSuffixCharPtr(const String* s, const char* suffix)
+{
+    uint suffix_len = 0;
+    while (suffix[suffix_len] != '\0') {
+        suffix_len++;
+    }
+    if (s->len < suffix_len) {
+        return false;
+    }
+    uint start = s->len - suffix_len;
+    for (uint i = 0; i < suffix_len; i++) {
+        if (s->contents[start + i] != suffix[i]) {
+            return false;
         }
     }
     return true;

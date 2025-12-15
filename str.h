@@ -58,7 +58,10 @@ const String* Slice(const String* s, uint from, uint upto);
 
 bool Equal(const String* a, const String* b);
 bool EqualCharPtr(const String* a, const char* b);
+
 bool HasPrefix(const String* s, const String* prefix);
 bool HasPrefixCharPtr(const String* s, const char* prefix);
+bool HasSuffix(const String* s, const String* suffix);
+bool HasSuffixCharPtr(const String* s, const char* suffix);
 
 const String* ListString(const String* s);
