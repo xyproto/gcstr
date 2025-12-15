@@ -60,3 +60,5 @@ gcstr
 main
 
 build/
+
+.clang-format
