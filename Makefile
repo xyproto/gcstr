@@ -34,4 +34,4 @@ install: lib$(NAME).so
 	install -Dm644 $(NAME).pc "$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(NAME).pc"
 
 clean:
-	@rm -f *~ *.bak *.swp *.tmp *.o *.so debug main gcstr
+	@rm -f *~ *.bak *.swp *.tmp *.o *.so debug main gcstr .clang-format
