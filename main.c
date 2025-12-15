@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
     err = test_MustFileData();
     if (err != nil) {
         String* situation = NewString("reading file");
-         panicWhen(situation, err);
+        panicWhen(situation, err);
     }
 
     // Test shifting strings left and right

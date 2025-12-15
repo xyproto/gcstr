@@ -194,7 +194,10 @@ bool HasChar(const String* s, char c)
     return false;
 }
 
-bool HasString(const String* s, const String* a) { return nil != strstr(s->contents, a->contents); }
+bool HasString(const String* s, const String* a)
+{
+    return nil != strstr(s->contents, a->contents);
+}
 
 char LastChar(const String* s) { return s->contents[s->len - 1]; }
 
@@ -390,10 +393,7 @@ void Append(String* a, const String* b)
 }
 
 // AppendChar is an alias for PushChar
-void AppendChar(String* a, char b)
-{
-    PushChar(a, b);
-}
+void AppendChar(String* a, char b) { PushChar(a, b); }
 
 void AppendCharPtr(String* a, const char* b) { Append(a, NewString(b)); }
 

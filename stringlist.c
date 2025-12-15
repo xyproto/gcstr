@@ -211,10 +211,7 @@ StringList* SplitChar(const String* s, char c)
 }
 
 // SplitCharPtr splits a string on the given const char* separator. No trimming.
-StringList* SplitCharPtr(const String* s, const char* sep)
-{
-    return Split(s, NewString(sep));
-}
+StringList* SplitCharPtr(const String* s, const char* sep) { return Split(s, NewString(sep)); }
 
 // Fields will split a string on any whitespace and trim the values.
 StringList* Fields(const String* s)

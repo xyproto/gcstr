@@ -1,6 +1,6 @@
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
 
 #include "convenience.h"
 #include "error.h"
@@ -11,8 +11,10 @@
 #include "stringlist.h"
 
 // Does the given filename look like it could mean standard in?
-const bool stdinFilename(const String* filename) {
-    return (EqualCharPtr(filename, "-") || EqualCharPtr(filename, "/dev/stdin") || filename->len == 0);
+const bool stdinFilename(const String* filename)
+{
+    return EqualCharPtr(filename, "-") || EqualCharPtr(filename, "/dev/stdin")
+        || filename->len == 0;
 }
 
 // ReadFile reads the given file into the given contents *String.
@@ -23,7 +25,7 @@ const Error* ReadFile(const String* filename, String* contents)
     if (stdinFilename(filename)) {
         return ReadStdin(contents);
     }
-    FileData *fd = NewFileData(filename);
+    FileData* fd = NewFileData(filename);
     if (fd == nil) {
         return NewErrorCharPtr("could not allocate memory for a new FileData struct");
     }
@@ -62,7 +64,7 @@ const String* MustReadFile(const String* filename)
         }
         return s;
     }
-    FileData *fd = NewFileData(filename);
+    FileData* fd = NewFileData(filename);
     const Error* err = FileDataToError(fd);
     if (err != nil) {
         String* situation = NewString("reading file");
