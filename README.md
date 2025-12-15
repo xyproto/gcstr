@@ -43,6 +43,6 @@ Safe garbage collected strings for C, inspired by Go.
 
 ## General info
 
-* Version: 4.0.0
+* Version: 4.0.1
 * License: BSD
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
