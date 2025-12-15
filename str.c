@@ -12,7 +12,7 @@
 #include "panic.h"
 #include "str.h"
 
-const uint defaultStringBufferSize = 1024;
+const uint defaultStringBufferSize = 64;
 
 String* NewString(const char* contents)
 {
