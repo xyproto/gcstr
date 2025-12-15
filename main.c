@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "convenience.h"
 #include "error.h"
@@ -221,11 +222,39 @@ const Error* test_SplitCharPtr()
     return nil;
 }
 
+const Error* test_ShiftReallocSafety()
+{
+    String* s = NewString("hello world");
+    // Shift left by 1.
+    // This tests if the left shift implementation properly moves data instead of
+    // creating an unsafe interior pointer.
+    Shift(s, -1);
+
+    // Force a reallocation by appending until we exceed capacity.
+    // If s->contents is an interior pointer, GC_REALLOC will likely crash or corrupt heap.
+    uint target = s->cap * 2 + 10;
+    for (uint i = 0; i < target; i++) {
+        PushChar(s, '!');
+    }
+
+    // Check if the content starts with "ello world"
+    if (!HasPrefix(s, NewString("ello world"))) {
+        return NewErrorCharPtr("test_ShiftReallocSafety: Content corrupted after realloc!");
+    }
+
+    Println(
+        NewString("test_ShiftReallocSafety: Successfully reallocated string after left shift."));
+    return nil;
+}
+
 int main(int argc, char* argv[])
 {
     // Test basic printing
     test_Println();
     test_Print();
+
+    // Test the safety of reallocating a shifted string
+    panicIfError(test_ShiftReallocSafety());
 
     // Test reading in a small text file, and error handling
     const Error* err = test_FileData();
