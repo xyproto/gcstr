@@ -16,7 +16,7 @@ const bool stdinFilename(const String* filename) {
 }
 
 // ReadFile reads the given file into the given contents *String.
-// Will read from stdin if the filename is "-".
+// Will read from stdin if the filename is "-", "" or "/dev/stdin".
 // An Error* is returned if there are issues.
 const Error* ReadFile(const String* filename, String* contents)
 {
