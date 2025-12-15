@@ -34,6 +34,25 @@ String* NewString(const char* contents)
     return s;
 }
 
+String* NewStringEmpty() { return NewStringCap(defaultStringBufferSize); }
+
+String* NewStringCap(uint cap)
+{
+    String* s = (String*)GC_MALLOC(sizeof(String));
+    if (s == nil) {
+        panicCharPtr("could not allocate memory in NewStringCap\n");
+    }
+    Reset(s);
+    return s;
+}
+
+String* NewStringCapLen(uint cap, uint len)
+{
+    String* s = NewStringCap(cap);
+    s->len = len;
+    return s;
+}
+
 String* NewStringMaxSize(const char* contents, size_t max_size)
 {
     String* s = (String*)GC_MALLOC(sizeof(String));
@@ -122,6 +141,19 @@ void PushChar(String* s, char c)
     s->contents[s->len] = '\0';
 }
 
+void Reset(String* s)
+{
+    s->len = 0;
+    if (s->cap == 0) {
+        s->cap = 1; // make room for the zero terminator
+    }
+    s->contents = (char*)GC_MALLOC(s->cap);
+    if (s->contents == nil) {
+        panicCharPtr("could not allocate memory in StringClear (s->contents)\n");
+    }
+    s->contents[0] = '\0';
+}
+
 // Shift the entire string to the right or to the left
 void Shift(String* s, int offset)
 {
@@ -143,7 +175,7 @@ void Shift(String* s, int offset)
     }
     // Nothing left, return an empty string
     if (newLength <= 0) {
-        s = NewString("");
+        Reset(s);
         return;
     }
     if (newLength > s->len) {
@@ -325,56 +357,36 @@ const String* Sprintf(const String* fmt, const String* a)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, a->contents) + 1;
-    // Allocate just enough memory
-    char* msg = (char*)GC_MALLOC(buf_size);
-    if (msg == nil) {
-        panicCharPtr("could not allocate memory in Sprintf");
-    }
-    snprintf(msg, buf_size, fmt->contents, a->contents);
-    msg[buf_size - 1] = 0;
-    return NewString(msg);
+    String* s = NewStringCapLen(buf_size, buf_size - 1);
+    snprintf(s->contents, buf_size, fmt->contents, a->contents);
+    return s;
 }
 
 const String* Sprintf2(const String* fmt, const String* a, const String* b)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, a->contents, b->contents) + 1;
-    // Allocate just enough memory
-    char* msg = (char*)GC_MALLOC(buf_size);
-    if (msg == nil) {
-        panicCharPtr("could not allocate memory in Sprintf2");
-    }
-    snprintf(msg, buf_size, fmt->contents, a->contents, b->contents);
-    msg[buf_size - 1] = 0;
-    return NewString(msg);
+    String* s = NewStringCapLen(buf_size, buf_size - 1);
+    snprintf(s->contents, buf_size, fmt->contents, a->contents, b->contents);
+    return s;
 }
 
 const String* SprintfUint(const String* fmt, uint u)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, u) + 1;
-    // Allocate just enough memory
-    char* msg = (char*)GC_MALLOC(buf_size);
-    if (msg == nil) {
-        panicCharPtr("could not allocate memory in SprintfUint");
-    }
-    snprintf(msg, buf_size, fmt->contents, u);
-    msg[buf_size - 1] = 0;
-    return NewString(msg);
+    String* s = NewStringCapLen(buf_size, buf_size - 1);
+    snprintf(s->contents, buf_size, fmt->contents, u);
+    return s;
 }
 
 const String* SprintfChar(const String* fmt, char c)
 {
     // Get the length of the resulting string
     size_t buf_size = snprintf(nil, 0, fmt->contents, c) + 1;
-    // Allocate just enough memory
-    char* msg = (char*)GC_MALLOC(buf_size);
-    if (msg == nil) {
-        panicCharPtr("could not allocate memory in SprintfChar");
-    }
-    snprintf(msg, buf_size, fmt->contents, c);
-    msg[buf_size - 1] = 0;
-    return NewString(msg);
+    String* s = NewStringCapLen(buf_size, buf_size - 1);
+    snprintf(s->contents, buf_size, fmt->contents, c);
+    return s;
 }
 
 const String* Combine(const String* a, const String* b)
@@ -418,8 +430,9 @@ const String* Slice(const String* s, uint from, uint upto)
     if (upto >= Len(s)) {
         upto = Len(s);
     }
+    uint len = upto - from;
     // Generate a new string to be filled with the contents of the sliced string
-    String* s2 = NewString("");
+    String* s2 = NewStringCap(len + 1);
     for (uint i = from; i < upto; i++) {
         // TODO: For performance, add a slice function that destroys the given string by inserting
         // a
@@ -449,7 +462,7 @@ bool EqualCharPtr(const String* a, const char* b)
 
 const String* ListString(const String* s)
 {
-    String* sb = NewString("");
+    String* sb = NewStringEmpty();
     AppendCharPtr(sb, "String*");
     if (s == nil) {
         AppendCharPtr(sb, "\tuninitialized");

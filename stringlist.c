@@ -15,8 +15,8 @@ StringList* NewStringList()
     if (sl == nil) {
         panicCharPtr("could not allocate memory in NewStringList");
     }
-    // Set an empty string value
-    sl->value = NewString("");
+    // Set an empty string value with a small initial capacity
+    sl->value = NewStringEmpty();
     // Set the pointer to the next element to nil, just to be explicit about it
     sl->next = nil;
     return sl;
@@ -110,7 +110,7 @@ StringList* Lines(const String* s)
     for (uint i = 0; i < Len(s); i++) {
         if (s->contents[i] == '\n') {
             // Add a new empty string to the string list, if the current string contains something
-            StringListPush(sl, NewString(""));
+            StringListPush(sl, NewStringEmpty());
             current = LastStringListNode(sl);
         } else {
             // Push a character to the current StringList node
@@ -161,7 +161,7 @@ const String* Join(StringList* sl, const String* sep)
         panicCharPtr("the given StringList* must be initialized");
     }
 
-    String* sb = NewString("");
+    String* sb = NewStringEmpty();
     StringNode* current = sl;
     while (current->next != nil) {
         Append(sb, current->value);
@@ -175,7 +175,7 @@ const String* Join(StringList* sl, const String* sep)
 // Join the given StringList* to a single String*, given a separator.
 const String* JoinCharPtr(StringList* sl, const char* sep)
 {
-    String* sb = NewString("");
+    String* sb = NewStringEmpty();
     StringNode* current = sl;
     while (current->next != nil) {
         Append(sb, current->value);
@@ -195,7 +195,7 @@ StringList* SplitChar(const String* s, char c)
         if (s->contents[i] == c) {
             // Add a new empty string to the string list, if the current string contains something
             if (Len(current->value) > 0) {
-                StringListPush(sl, NewString(""));
+                StringListPush(sl, NewStringEmpty());
                 current = LastStringListNode(sl);
             }
         } else {
@@ -224,7 +224,7 @@ StringList* Fields(const String* s)
             || s->contents[i] == '\0') {
             // Add a new empty string to the string list, if the current string contains something
             if (Len(current->value) > 0) {
-                StringListPush(sl, NewString(""));
+                StringListPush(sl, NewStringEmpty());
                 current = LastStringListNode(sl);
             }
         } else {

@@ -7,6 +7,9 @@
 #include "structs.h"
 
 String* NewString(const char* contents);
+String* NewStringCap(uint cap);
+String* NewStringCapLen(uint cap, uint len);
+String* NewStringEmpty();
 String* NewStringMaxSize(const char* contents, size_t max_size);
 String* NewStringNoCopy(const char* contents);
 String* NewStringNoCopyMaxSize(const char* contents, size_t max_size);
@@ -24,6 +27,7 @@ void LeftTrim(String* s, const String* sep);
 void TrimSep(String* s, const String* sep);
 void Trim(String* s);
 void Shift(String* s, int offset);
+void Reset(String* s);
 
 const char* StringToCharPtr(const String* s);
 uint Len(const String* s);
