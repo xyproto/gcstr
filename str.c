@@ -474,6 +474,31 @@ bool EqualCharPtr(const String* a, const char* b)
     return strncmp(a->contents, b, a->len) == 0; // equality check
 }
 
+bool HasPrefix(const String* s, const String* prefix)
+{
+    if (s->len < prefix->len) {
+        return false; // the string is shorter than the prefix
+    }
+    // Loop over prefix->len, since we know that this is shorter than s->len
+    for (uint i = 0; i < prefix->len; i++) {
+        if (s->contents[i] != prefix->contents[i]) {
+            return false; // mismatch
+        }
+    }
+    return true;
+}
+
+bool HasPrefixCharPtr(const String* s, const char* prefix)
+{
+    for (uint i = 0; i < s->len; i++) {
+        // this check also catches the case where the null terminator in prefix is reached
+        if (s->contents[i] != prefix[i]) {
+            return false; // mismatch
+        }
+    }
+    return true;
+}
+
 const String* ListString(const String* s)
 {
     String* sb = NewStringEmpty();
