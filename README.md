@@ -16,7 +16,7 @@ Safe garbage collected strings for C, inspired by Go.
 * In lack of generics, use function signatures that contains the types, like `const char* ErrorToCharPtr(Error* err);`. It's verbose, but clear.
 * Make things correct first, then fast later.
 * All functions may panic if memory can not be allocated.
-* If functions may panic for other reasons, the function name must be prefixed with **Must**.
+* If functions can panic for other reasons than failed memory allocations, the function name must be prefixed with **Must**.
 * Error messages should start with a lowercase letter and not end with punctuation.
 * The API is stable for each major version number.
 
@@ -30,7 +30,7 @@ Safe garbage collected strings for C, inspired by Go.
 
     sudo make install
 
-## CMake and Ninja
+## CMake
 
 ### Build
 
